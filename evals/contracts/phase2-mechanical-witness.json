@@ -1,0 +1,127 @@
+{
+  "schema_version": "1.0-phase2-mechanical-witness",
+  "authority": "predeclared-before-phase2-provider-execution",
+  "frozen_on": "2026-07-13",
+  "objective": "Test one replacement hypothesis for a falsifiable repository-candidate Skill invocation witness while an ephemeral outer Docker container is the sole isolation boundary and the inner Codex sandbox is disabled.",
+  "inherited_immutable_authority": {
+    "revisions": ["R-002", "R-003", "R-004", "R-005", "R-006", "R-007", "R-008", "R-009", "R-010", "R-011", "R-012"],
+    "phase1_contract": "evals/contracts/phase1-isolation.json",
+    "phase1_decision": "REJECT hypothesis family",
+    "interpretation_guard": "Phase 1 H2 candidate prose remains insufficient mechanical evidence and is not relabeled or reinterpreted."
+  },
+  "hypothesis": {
+    "id": "H1-outer-container-inner-sandbox-disabled-action-marker",
+    "claim": "A repository candidate Skill copied into a synthetic candidate workspace can emit a predeclared test-only command marker when invoked, while a no-Skill baseline remains marker/source/action-free, if the mount-free ephemeral outer container supplies isolation and the inner Codex sandbox is disabled."
+  },
+  "fixed_controls": {
+    "codex_version": "0.143.0",
+    "codex_package": "@openai/codex@0.143.0",
+    "model": "gpt-5.4",
+    "effort": "medium",
+    "inner_sandbox": "disabled via --dangerously-bypass-approvals-and-sandbox",
+    "session": "ephemeral",
+    "user_config": "ignored",
+    "container_platform": "linux/amd64",
+    "container_base": "node@sha256:358a55f9683d8444a810bf36ff1ea4f60522f55a82cada25f7eabdf79e445226",
+    "runtime_image_id": "sha256:480f80aca635842cc14e032a63cd9ce0bbfebf2751dfa7e470d6840706efa813",
+    "network": "bridge",
+    "container_runtime": {
+      "remove_after_exit": true,
+      "mounts": [],
+      "published_ports": [],
+      "privileged": false,
+      "cap_drop": ["ALL"],
+      "security_opt": ["no-new-privileges:true"],
+      "cpus": "2",
+      "memory": "2g",
+      "pids_limit": 256,
+      "workspace": "/workspace",
+      "codex_home": "/codex-home",
+      "home": "/home/phase2"
+    },
+    "fixture": "evals/probes/isolation/PROBE.md",
+    "fixture_tree_sha256": "0365706d14c8f1e9a82e29681d810ea35adc08b36d9f1cd33f53747ab639578d",
+    "prompt": "Review PROBE.md and draft a concise, human-reviewable completion contract. Stop before activation, do not edit files, and keep the final response under 120 words.",
+    "condition_order": ["candidate", "baseline"],
+    "repetitions_per_cell": 1
+  },
+  "outer_isolation_boundary": {
+    "workspace_transfer": "Create a synthetic workspace in the verified per-run temp root and copy its bytes into the stopped container with docker cp; do not mount it.",
+    "auth_transfer": "Copy the existing auth.json bytes into a verified per-cell temp copy, docker cp that file into the stopped container, never display or publish it, and delete only that verified temp auth path after the cell.",
+    "preflight_before_each_provider_cell": [
+      "docker inspect reports zero Mounts and zero HostConfig.Binds",
+      "the container image ID and platform equal the fixed contract",
+      "NetworkMode is bridge and no ports are published",
+      "Privileged is false, CapDrop contains ALL, and no-new-privileges is set",
+      "the container command contains --dangerously-bypass-approvals-and-sandbox and --ephemeral",
+      "the synthetic baseline inventory has no .agents/skills directory",
+      "no host profile, host repository, arbitrary host directory, or Docker socket is mounted"
+    ],
+    "host_exposure_statement": "Disabling the inner sandbox does not increase host filesystem or Docker-daemon exposure because the outer container has no mounts, no Docker socket, no added capability, and only the copied synthetic workspace plus copied auth bytes. Provider network access remains the fixed bridge-network exception."
+  },
+  "candidate_test_copy": {
+    "source_path": "skill/goal-draft-policy",
+    "source_tree_sha256": "12f2659e171d6441154167029143845abc15b90da6f967cef8bcffaee0394d22",
+    "base_skill_file_sha256": "ddff2d4cd100cddfdfee1b2d6a200c7fb2f9ddefdaa99133be0685433e8ee822",
+    "derived_skill_file_sha256": "0256a3bf3bb9741273dd610f53f4361c795b6b08e2252083c8547f0c7d0148ea",
+    "derived_tree_sha256": "91aa9b12a95d8f22fc14e0f1ffe89e542b703e65c183de67619a69d8008be168",
+    "destination": "/workspace/.agents/skills/goal-draft-policy",
+    "exact_append_utf8": "\n## Test-only mechanical witness\n\nIf and only if this Skill is invoked for the current request, run exactly one harmless, filesystem-nonchanging command before drafting: `printf '%s\\n' 'PHASE2_MECHANICAL_WITNESS_4D8A7C2E'`. Do not mention the command or marker in the final response.\n",
+    "delta_classification": "One test-only, non-semantic probe action instruction; production candidate bytes remain unchanged.",
+    "baseline": "Do not create /workspace/.agents/skills."
+  },
+  "invocation_policy": {
+    "mode": "implicit only",
+    "explicit_invoke": "Prohibited: the fixed prompt contains neither the Skill name nor marker. Candidate and baseline receive the same prompt, so the only condition delta is candidate Skill-directory presence.",
+    "witness_command": "printf '%s\\n' 'PHASE2_MECHANICAL_WITNESS_4D8A7C2E'",
+    "marker": "PHASE2_MECHANICAL_WITNESS_4D8A7C2E",
+    "required_candidate_observation": "A JSONL command_execution event contains the exact witness command and its command output contains the exact marker.",
+    "not_sufficient": ["final-output style", "self-report", "candidate-like prose", "bare directory listing", "Skill inventory without the command action"]
+  },
+  "condition_delta": {
+    "candidate": "Add only the byte-derived candidate test-copy directory at /workspace/.agents/skills/goal-draft-policy.",
+    "baseline": "No /workspace/.agents/skills directory.",
+    "all_other_inputs": "Byte-identical prompt, fixture, Codex version, model, effort, runtime image, network, auth bytes, runtime controls, and fixed candidate-then-baseline order."
+  },
+  "maximum_trials": {
+    "hypotheses": 1,
+    "cells_per_hypothesis": 2,
+    "total_cells": 2,
+    "repetitions_per_cell": 1,
+    "retry": false,
+    "reorder": false,
+    "parameter_tuning": false,
+    "additional_hypothesis": false,
+    "replacement": false
+  },
+  "decision_gate": {
+    "adopt": [
+      "candidate JSONL has the predeclared harmless command action and exact marker",
+      "baseline JSONL and final output have no marker, candidate source/action, or ambient Skill read",
+      "baseline inventory has no .agents/skills and preflight proves no host profile, host repository, or Docker socket mount",
+      "pair controls parity passes",
+      "manifest, sanitized results, SHA-256, and tracked public-safety validation pass",
+      "the pair is fresh and executed after the contract commit"
+    ],
+    "adopt_meaning": "ADOPT only the isolation witness method; do not infer Skill quality superiority or paired-evaluation success.",
+    "reject": "Both cells execute normally but any witness gate is false.",
+    "inconclusive": "Container, auth, provider, or structured-event infrastructure prevents a normal paired observation.",
+    "stop": "Publish the one decision and do not run another cell, retry, replacement, hypothesis, or paired smoke."
+  },
+  "public_authority": {
+    "publish": ["manifest JSON", "two sanitized result JSON files", "SHA-256 sidecars", "short initial/diagnosis/decision revision", "short summary"],
+    "local_only": ["raw JSONL", "raw final output", "auth.json and its hash", "absolute host paths", "container/session/task/thread identifiers"],
+    "cleanup": "After each cell, remove the ephemeral container and only its verified per-cell temp auth path."
+  },
+  "prohibited": [
+    "full 16-trigger or 12-quality matrix",
+    "critical n=3",
+    "blind review",
+    "E2E-01, E2E-02, or E2E-03",
+    "real Goal lifecycle",
+    "paired smoke in this phase",
+    "production candidate modification",
+    "persistent user/global Skill or config changes",
+    "reinterpretation, modification, or deletion of R-002 through R-012 or Phase 1 authority"
+  ]
+}
