@@ -51,6 +51,17 @@ The bounded follow-up is separate from the full paired matrix and preserves all 
 
 Phase 1 decision: `REJECT hypothesis family` after two hypotheses/four cells. No passing comparison was created, and Phase 2 paired smoke is not eligible to start.
 
+## Replacement Phase 2 mechanical witness authority
+
+This bounded replacement tests only the witness method; it does not start the previously ineligible paired smoke.
+
+- Predeclared design/contract: [`../evals/contracts/phase2-mechanical-witness.json`](../evals/contracts/phase2-mechanical-witness.json)
+- One immutable pair: [`20260713071307-h1-outer-container-inner-sandbox-disabled-action-marker`](v2/isolation/phase2/20260713071307-h1-outer-container-inner-sandbox-disabled-action-marker/manifest.json): candidate and baseline both normal/exit 0; baseline, boundary, parity, hash, safety, and freshness passed; candidate exact-action witness failed.
+- Final summary: [`v2/isolation/phase2/summary.md`](v2/isolation/phase2/summary.md)
+- Revision: [`R-013`](revisions/R-013-phase2-exact-action-mismatch/)
+
+Replacement Phase 2 decision: `REJECT`. No retry or passing replacement was created, and valid paired smoke remains ineligible.
+
 ## E2E authority
 
 E2E results live separately under `results/v2/e2e/`:

@@ -9,6 +9,7 @@ Recorded: 2026-07-13
 | Pure validation | PASS: 31 cases, 8 fixtures | Local `npm test`; reproducible in pure CI |
 | Paired `with_skill` / `without_skill` | INCONCLUSIVE | Six committed runs are `contaminated`; no valid paired comparison |
 | Phase 1 isolation remediation | REJECT hypothesis family | Two hypotheses / four cells; candidate mechanical witness not established |
+| Replacement Phase 2 mechanical witness | REJECT | One hypothesis / two normal cells; exact-action witness gate failed |
 | Blind subjective review | UNEXECUTED | No scores claimed |
 | Critical n=3 provider cases | UNEXECUTED | Condition isolation failed before full matrix |
 | Real `/goal` E2E-01 | PASS on revision | [`revision` manifest](e2e/20260713062403-e2e-01-interactive-revision/manifest.json) |
@@ -21,6 +22,12 @@ No statistical significance, population-level superiority, or general Codex reli
 The predeclared bounded follow-up ran two hypotheses with one candidate and one baseline cell each. H1 is `INCONCLUSIVE` because both cells stopped before model output when the slim container lacked root CAs. After preserving that failure and committing the CA prerequisite revision, H2 completed both cells under Codex CLI 0.143.0, `gpt-5.4`, medium effort, and a read-only sandbox.
 
 H2 passed baseline absence, condition parity, and published manifest/result/hash validation. It failed candidate mechanical witness: JSONL had no exact repository `SKILL.md` read and no fixed marker. Candidate-specific prose was not promoted because output style was predeclared as insufficient. The family is `REJECT`, the maximum two hypotheses/four cells was reached, and Phase 2 is not eligible. See [`isolation/phase1/summary.md`](isolation/phase1/summary.md).
+
+## Replacement Phase 2 mechanical witness remediation
+
+One fresh post-contract candidate/baseline pair ran under an ephemeral outer Docker container with zero host mounts and the inner Codex sandbox disabled. Both cells exited 0 with normal JSONL. Baseline absence, outer-boundary, parity, artifact/hash, public-safety, and freshness gates passed.
+
+The candidate read the derived Skill and later produced the fixed marker, but the shell wrapper escaped the command format string, so the structured command field did not contain the predeclared exact command substring. Because marker presence also occurred in the source-read output, it was not promoted by itself. The frozen candidate witness gate is false, the decision is `REJECT`, and no retry, normalization change, replacement, or paired smoke was run. See [`isolation/phase2/summary.md`](isolation/phase2/summary.md).
 
 ## Paired evaluation outcome
 

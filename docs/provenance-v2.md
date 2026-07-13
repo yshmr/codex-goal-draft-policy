@@ -59,6 +59,8 @@ Six paired provider manifests were committed as contaminated while testing Skill
 
 The bounded Phase 1 follow-up then ran two isolation hypotheses/four cells. H1 remained inconclusive after a missing container CA bundle prevented provider execution. H2 completed normally and proved the baseline absence/parity/hash gates, but not the predeclared candidate source-read/marker witness. Its candidate-specific prose was not reinterpreted as mechanical evidence; the hypothesis family was rejected and Phase 2 was not started.
 
+A separate Replacement Phase 2 then ran one fresh mechanical-witness hypothesis/two cells. The mount-free outer container allowed both cells to complete normally with the inner sandbox disabled, and baseline/boundary/parity/hash/safety/freshness gates passed. The candidate's shell-wrapped command representation did not match the frozen exact-command substring, so the witness method was rejected without post-hoc normalization or another run. Paired smoke was not started.
+
 The complete tested-observation summary is [`results/v2/summary.md`](../results/v2/summary.md). The predeclared contract, runner, fixtures, and unexecuted cases remain methods rather than results.
 
 ## Source route note
