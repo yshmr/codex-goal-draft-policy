@@ -6,7 +6,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "test": "node scripts/validate.mjs && node --test tests/phase3-structured-action-detector.test.mjs",
+    "test": "node scripts/validate.mjs && node --test tests/*.test.mjs",
     "validate": "node scripts/validate.mjs",
     "detector:test": "node --test tests/phase3-structured-action-detector.test.mjs",
     "fixtures:update": "node scripts/validate.mjs --update-fixtures",

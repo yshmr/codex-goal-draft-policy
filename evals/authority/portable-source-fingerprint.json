@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0-portable-source-fingerprint",
+  "authority": "ci-portability-only-does-not-relabel-historical-results",
+  "source_path": "skill/goal-draft-policy",
+  "normalization": "Decode tracked UTF-8 text and normalize CRLF or CR to LF before hashing.",
+  "historical_contract_raw_hashes": {
+    "phase2": {
+      "source_tree_sha256": "12f2659e171d6441154167029143845abc15b90da6f967cef8bcffaee0394d22",
+      "base_skill_file_sha256": "ddff2d4cd100cddfdfee1b2d6a200c7fb2f9ddefdaa99133be0685433e8ee822",
+      "derived_skill_file_sha256": "0256a3bf3bb9741273dd610f53f4361c795b6b08e2252083c8547f0c7d0148ea",
+      "derived_tree_sha256": "91aa9b12a95d8f22fc14e0f1ffe89e542b703e65c183de67619a69d8008be168"
+    },
+    "phase3": {
+      "source_tree_sha256": "12f2659e171d6441154167029143845abc15b90da6f967cef8bcffaee0394d22",
+      "base_skill_file_sha256": "ddff2d4cd100cddfdfee1b2d6a200c7fb2f9ddefdaa99133be0685433e8ee822",
+      "derived_skill_file_sha256": "7d54d3784ef5a5fd37199cc49d283c750f9c9ee4d1cc61ec235e2edabc845c45",
+      "derived_tree_sha256": "178122b60681d9d241ef9f688c8c265461e211368c8d7443fa9e909dc65651b4"
+    }
+  },
+  "canonical_lf_hashes": {
+    "source_tree_sha256": "ecb84ef7de708bc7d4c65fa4d562c6d3c121c95d4eb15358e428a23b6115c158",
+    "base_skill_file_sha256": "c9690380f4468640acac209d6ccea42e9379f43b5f51607fa5b758b41d8c7a31",
+    "phase2_derived_skill_file_sha256": "fb608b1ee03da0a9033251341ba761a9a01a076e521977aa5215a2071f43ecb1",
+    "phase2_derived_tree_sha256": "2a953b32523eeb1f52dd05153ff578ba2111e57182ca99b5b942b66e5f61cae3",
+    "phase3_derived_skill_file_sha256": "0319fb11c51d04e6538d4c85ecbb073111e90d99c78bd770f48fa4a659be4470",
+    "phase3_derived_tree_sha256": "7ea9119cd7594f52f173d75b0597860228bf50de9961bb7531f13d9e1642d076"
+  }
+}

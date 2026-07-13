@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { allCases, readJson, repoRoot, resolveCodexInvocation, sha256, stableJson, treeDigest, walkFiles } from "./lib.mjs";
 import { gradeRun } from "./grader.mjs";
+import { canonicalLfBytes, portableDerivedTreeDigest, portableTreeDigest } from "./portable-source-hash.mjs";
 
 const updateFixtures = process.argv.includes("--update-fixtures");
 const errors = [];
@@ -181,19 +182,6 @@ function validatePhase2MechanicalWitness() {
   check(contract.invocation_policy?.mode === "implicit only", "Phase 2 invocation mode changed");
   check(!contract.fixed_controls?.prompt?.includes("goal-draft-policy") && !contract.fixed_controls?.prompt?.includes(contract.invocation_policy?.marker), "Phase 2 baseline prompt leaks the candidate or marker");
 
-  const source = path.join(repoRoot, "skill", "goal-draft-policy");
-  const sourceTree = treeDigest(source);
-  const baseSkill = fs.readFileSync(path.join(source, "SKILL.md"));
-  const derivedSkill = Buffer.concat([baseSkill, Buffer.from(contract.candidate_test_copy.exact_append_utf8)]);
-  check(sourceTree.sha256 === contract.candidate_test_copy.source_tree_sha256, "Phase 2 source candidate tree hash changed");
-  check(sha256(baseSkill) === contract.candidate_test_copy.base_skill_file_sha256, "Phase 2 base SKILL.md hash changed");
-  check(sha256(derivedSkill) === contract.candidate_test_copy.derived_skill_file_sha256, "Phase 2 derived SKILL.md hash mismatch");
-  const derivedRecords = sourceTree.files.map((record) => record.path === "SKILL.md"
-    ? { ...record, bytes: derivedSkill.length, sha256: sha256(derivedSkill) }
-    : record);
-  const derivedPayload = derivedRecords.map((record) => `${record.path}\0${record.bytes}\0${record.sha256}\n`).join("");
-  check(sha256(derivedPayload) === contract.candidate_test_copy.derived_tree_sha256, "Phase 2 derived candidate tree hash mismatch");
-
   const root = path.join(repoRoot, "results", "v2", "isolation", "phase2");
   if (!fs.existsSync(root)) return;
   const manifests = walkFiles(root).filter((name) => name.endsWith("manifest.json"));
@@ -239,6 +227,43 @@ function validatePhase2MechanicalWitness() {
   }
 }
 
+function validatePortableCandidateSource() {
+  const fingerprint = readJson(path.join(repoRoot, "evals", "authority", "portable-source-fingerprint.json"));
+  const phase2 = readJson(path.join(repoRoot, "evals", "contracts", "phase2-mechanical-witness.json"));
+  const phase3 = readJson(path.join(repoRoot, "evals", "contracts", "phase3-structured-action-witness.json"));
+  const rawHashFields = [
+    "source_tree_sha256",
+    "base_skill_file_sha256",
+    "derived_skill_file_sha256",
+    "derived_tree_sha256"
+  ];
+
+  check(fingerprint.schema_version === "1.0-portable-source-fingerprint", "portable source fingerprint schema changed");
+  check(fingerprint.authority === "ci-portability-only-does-not-relabel-historical-results", "portable source fingerprint authority changed");
+  for (const [label, contract] of [["phase2", phase2], ["phase3", phase3]]) {
+    for (const field of rawHashFields) {
+      check(
+        fingerprint.historical_contract_raw_hashes?.[label]?.[field] === contract.candidate_test_copy?.[field],
+        `${label}: historical raw candidate hash authority changed`
+      );
+    }
+  }
+
+  const source = path.join(repoRoot, "skill", "goal-draft-policy");
+  const sourceTree = portableTreeDigest(source);
+  const baseSkill = canonicalLfBytes(fs.readFileSync(path.join(source, "SKILL.md")));
+  const expected = fingerprint.canonical_lf_hashes || {};
+  check(sourceTree.sha256 === expected.source_tree_sha256, "portable source candidate tree hash changed");
+  check(sha256(baseSkill) === expected.base_skill_file_sha256, "portable base SKILL.md hash changed");
+
+  for (const [label, contract] of [["phase2", phase2], ["phase3", phase3]]) {
+    const derivedSkill = Buffer.concat([baseSkill, Buffer.from(contract.candidate_test_copy.exact_append_utf8)]);
+    const derivedTree = portableDerivedTreeDigest(sourceTree, derivedSkill);
+    check(sha256(derivedSkill) === expected[`${label}_derived_skill_file_sha256`], `${label}: portable derived SKILL.md hash mismatch`);
+    check(derivedTree.sha256 === expected[`${label}_derived_tree_sha256`], `${label}: portable derived candidate tree hash mismatch`);
+  }
+}
+
 function validatePhase3StructuredActionWitness() {
   const contractFile = path.join(repoRoot, "evals", "contracts", "phase3-structured-action-witness.json");
   const contract = readJson(contractFile);
@@ -258,19 +283,6 @@ function validatePhase3StructuredActionWitness() {
   check(contract.detector?.action?.exact_output === `${contract.detector?.action?.marker}\n`, "Phase 3 exact action output changed");
   check(Buffer.byteLength(contract.detector.action.exact_output) === contract.detector.action.expected_utf8_bytes, "Phase 3 action byte length mismatch");
   check(sha256(contract.detector.action.exact_output) === contract.detector.action.expected_output_sha256, "Phase 3 action output hash mismatch");
-
-  const source = path.join(repoRoot, "skill", "goal-draft-policy");
-  const sourceTree = treeDigest(source);
-  const baseSkill = fs.readFileSync(path.join(source, "SKILL.md"));
-  const derivedSkill = Buffer.concat([baseSkill, Buffer.from(contract.candidate_test_copy.exact_append_utf8)]);
-  check(sourceTree.sha256 === contract.candidate_test_copy.source_tree_sha256, "Phase 3 source candidate tree hash changed");
-  check(sha256(baseSkill) === contract.candidate_test_copy.base_skill_file_sha256, "Phase 3 base SKILL.md hash changed");
-  check(sha256(derivedSkill) === contract.candidate_test_copy.derived_skill_file_sha256, "Phase 3 derived SKILL.md hash mismatch");
-  const records = sourceTree.files.map((record) => record.path === "SKILL.md"
-    ? { ...record, bytes: derivedSkill.length, sha256: sha256(derivedSkill) }
-    : record);
-  const payload = records.map((record) => `${record.path}\0${record.bytes}\0${record.sha256}\n`).join("");
-  check(sha256(payload) === contract.candidate_test_copy.derived_tree_sha256, "Phase 3 derived candidate tree hash mismatch");
 
   const root = path.join(repoRoot, "results", "v2", "isolation", "phase3");
   if (!fs.existsSync(root)) return;
@@ -426,6 +438,7 @@ validateMarkdownLinks();
 validatePublicSafety();
 validatePublishedResults();
 validatePhase1Isolation();
+validatePortableCandidateSource();
 validatePhase2MechanicalWitness();
 validatePhase3StructuredActionWitness();
 validateManualReviews();
