@@ -1,6 +1,6 @@
 ---
 name: goal-draft-policy
-description: Draft or review a human-reviewable Codex /goal completion contract for long-running, multi-turn, iterative, or evidence-driven work. Use when the user wants a /goal objective prepared, critiqued, or refined for human review before activation. Do not implicitly invoke this skill when the same user request explicitly asks to activate, execute, or continue through the Goal after drafting it. This skill stops at the reviewed draft.
+description: Draft or review a human-reviewable Codex /goal completion contract for long-running, multi-turn, iterative, or evidence-driven work before activation. Use for explicit or implicit requests to prepare, critique, or refine a Goal draft. Do not implicitly invoke for combined draft-and-execute requests, ordinary plans or one-off work, /goal explanation questions, or continuation of an active Goal. This skill always stops at the reviewed draft.
 ---
 
 # Goal Draft Policy
@@ -14,6 +14,8 @@ This skill applies to human-review-before-activation workflows: drafting a `/goa
 Do not implicitly invoke this skill for a combined draft-and-execute request where the same user request explicitly asks to create a Goal and then activate it, execute it, continue through it, or begin implementation, evaluation, or optimization after drafting. Do not treat this skill as a mandatory review gate for those requests.
 
 When the user explicitly invokes `$goal-draft-policy`, this skill applies even if the surrounding request mentions later execution. In that case, stop after presenting the reviewed draft. This skill does not activate, persist, or begin executing a Goal.
+
+Do not use this skill merely because a request contains the word "goal", asks for a plan, describes long work, asks how `/goal` works, or continues work under an already active Goal. Those are adjacent workflows, not Goal-draft requests.
 
 Treat the goal as a completion contract, not a long implementation procedure.
 
@@ -29,6 +31,8 @@ Before drafting, inspect the actual available state enough to ground the contrac
 
 Use `rg`/`rg --files` first when searching repository or filesystem material. Record only the evidence that materially shaped the goal draft.
 
+When no repository exists, inspect the supplied brief, artifacts, datasets, or other evidence surfaces. Do not invent repository conventions or commands. State that repository-grounded validation is unavailable.
+
 ## Suitability Check
 
 Decide whether Goal mode is appropriate before producing a draft. A good Goal candidate has:
@@ -40,6 +44,8 @@ Decide whether Goal mode is appropriate before producing a draft. A good Goal ca
 - A verifiable stopping condition.
 
 If these are not true, do not force a `/goal` draft. Explain why Goal mode is unsuitable and suggest a better next step, such as a normal prompt, a plan, a smaller investigation, or a clarified objective.
+
+An already-achieved target is not automatically a durable Goal. Verify that status and recommend a normal validation or reporting task unless a distinct, still-unfinished durable outcome is grounded in the request. Do not substitute a new objective merely to preserve Goal suitability.
 
 ## Draft Requirements
 
@@ -66,6 +72,8 @@ Avoid vague verification such as "tests pass", "quality is good", or "evaluation
 
 If no reliable verification surface exists, say so in the draft and make that a risk, boundary, or blocker instead of inventing one.
 
+In monorepos, distinguish root commands from package-local commands. When package metadata and CI disagree, name the mismatch as evidence to resolve; do not present either command as authoritative without qualification.
+
 ## Evaluation And Decision Goals
 
 For evaluation, experiment, comparison, and technical decision goals, avoid outcome bias. Do not make a particular candidate's adoption, rejection, or improvement the hidden success condition unless the user explicitly requested an optimization task with a fixed target metric.
@@ -79,6 +87,8 @@ For candidate evaluations or binary comparisons, allow any evidence-supported co
 For broader technical decisions, derive the valid decision space from the actual task and evidence instead of forcing an adopt/reject/inconclusive framing.
 
 Do not let goal execution redefine metrics, baselines, gates, benchmarks, or the evaluation contract merely to make completion easier. If the evidence shows the contract must change, treat that as an important finding or blocker requiring human guidance.
+
+A measurable surface does not establish a target. Use a numeric threshold only when the prompt or a named pre-existing artifact fixes it before the evaluation or optimization loop. Preserve its provenance in the draft. If measurement is impossible or unreliable, use an honest qualitative review or decision ending when the task supports one; otherwise identify the missing measurement as a limitation or blocker.
 
 ## Iteration Policy
 
@@ -122,6 +132,8 @@ Before showing the draft, review it against this checklist:
 
 Revise the draft if any item fails.
 
+When reviewing an already healthy Goal, preserve its sound outcome and boundaries. Make only evidence-supported repairs; do not expand or rewrite it for stylistic completeness.
+
 ## Output Format
 
 Present the result in this order:
@@ -133,3 +145,5 @@ Present the result in this order:
 5. Remaining risks or unresolved ambiguities.
 
 End by reminding the user that the draft has not been activated.
+
+Use `references/review-checklist.md` for the final compact audit when it is available.
