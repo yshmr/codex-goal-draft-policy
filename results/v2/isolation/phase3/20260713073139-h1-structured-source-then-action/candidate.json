@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0-phase3-structured-action-witness-result",
+  "run_id": "20260713073139-h1-structured-source-then-action",
+  "hypothesis_id": "H1-structured-source-then-action",
+  "condition": "candidate",
+  "repetition": 1,
+  "execution_status": "normal",
+  "exit_code": 0,
+  "structured_event_observed": true,
+  "structured_event_stream_normal": true,
+  "invalid_jsonl_lines": 0,
+  "fixture_tree_sha256": "0365706d14c8f1e9a82e29681d810ea35adc08b36d9f1cd33f53747ab639578d",
+  "prompt_sha256": "81be95f7c6f83e1d36232764b2eee8222edac21a7a0d9c5929e100b261367055",
+  "source_skill_tree_sha256": "12f2659e171d6441154167029143845abc15b90da6f967cef8bcffaee0394d22",
+  "candidate_test_copy_tree_sha256": "178122b60681d9d241ef9f688c8c265461e211368c8d7443fa9e909dc65651b4",
+  "skill_inventory": [
+    "agents\\openai.yaml",
+    "references\\review-checklist.md",
+    "SKILL.md"
+  ],
+  "preflight": {
+    "mounts_empty": true,
+    "binds_empty": true,
+    "docker_socket_mounted": false,
+    "host_profile_mounted": false,
+    "host_repository_mounted": false,
+    "arbitrary_host_directory_mounted": false,
+    "image_fixed": true,
+    "network_fixed": true,
+    "no_published_ports": true,
+    "unprivileged_runtime_controls_fixed": true,
+    "resource_controls_fixed": true,
+    "inner_sandbox_disabled_inside_outer_boundary": true,
+    "ephemeral_session_and_container": true,
+    "pass": true
+  },
+  "auth_bytes_match_source": true,
+  "candidate_detection": {
+    "pass": true,
+    "source_read_count": 1,
+    "qualifying_action_count": 1,
+    "source": {
+      "completed_event_ordinal": 6,
+      "event_type": "item.completed",
+      "item_type": "command_execution",
+      "status": "completed",
+      "exit_code": 0
+    },
+    "action": {
+      "completed_event_ordinal": 9,
+      "event_type": "item.completed",
+      "item_type": "command_execution",
+      "status": "completed",
+      "exit_code": 0,
+      "output_utf8_bytes": 42,
+      "output_sha256": "8a8b72b7950b90b25000d04b4c8969a4c881f8c984c9127cdae02451aec24955",
+      "exact_output_match": true,
+      "command_field_examined": false
+    },
+    "distinct_event_identity": true,
+    "source_before_action": true,
+    "marker_in_final_output": false,
+    "failure_reasons": []
+  },
+  "baseline_detection": null,
+  "usage": {
+    "input_tokens": 47750,
+    "cached_input_tokens": 19456,
+    "output_tokens": 745,
+    "reasoning_output_tokens": 121
+  },
+  "raw_trace_sha256": "d8651d47af987b3b6dc18b3d44763156970553c6ab9d9a346e9bf11bae2f7463",
+  "raw_output_sha256": "10a61f9fd20fded2d610e1d597e5f607ddaa955bd1e3ef63bd1c67d879fd0c9e",
+  "sanitized_output_sha256": "10a61f9fd20fded2d610e1d597e5f607ddaa955bd1e3ef63bd1c67d879fd0c9e",
+  "sanitized_output": "Goal mode suitability: Suitable; this is a bounded documentation-audit contract with clear evidence and review-only scope.\n\nEvidence used: `PROBE.md` only. Verification surface: reread the draft and confirm it names `PROBE.md` and stops before activation.\n\n`/goal` draft: Audit repository documentation using `PROBE.md` as the sole source of truth. Produce an evidence-based conclusion only: adopt, reject, or inconclusive. Do not edit files, activate a Goal, or invent numeric thresholds. Iterate by rereading `PROBE.md`, checking the contract against it, and refining only from that evidence. Stop when the conclusion is supported or when ambiguity in `PROBE.md` prevents a defensible conclusion.\n\nRationale: Single durable outcome, bounded evidence loop, unbiased endings.\n\nRisks: No additional artifacts exist. Draft not activated.",
+  "infrastructure_error_class": null
+}
