@@ -108,7 +108,7 @@ for (const caseDef of selected) {
       fs.cpSync(path.join(repoRoot, "fixtures", caseDef.fixture), workDir, { recursive: true });
       copyAuth(sourceCodexHome, isolatedHome);
       if (condition === "with_skill") {
-        fs.cpSync(path.join(repoRoot, "skill", "goal-draft-policy"), path.join(isolatedProfile, ".agents", "skills", "goal-draft-policy"), { recursive: true });
+        fs.cpSync(path.join(repoRoot, "skill", "goal-draft-policy"), path.join(workDir, ".agents", "skills", "goal-draft-policy"), { recursive: true });
       }
       const outputFile = path.join(cellRoot, "last-message.txt");
       const args = [

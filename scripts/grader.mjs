@@ -126,6 +126,8 @@ export function gradeRun({ caseDef, condition, traceText, outputText, expectedSk
       ? ["Skill invocation observed in without_skill condition."]
       : condition === "with_skill" && invocationObserved && !currentSkillObserved
         ? ["Invoked Skill source does not contain the current committed marker."]
+        : condition === "with_skill" && caseDef.expected_trigger === "explicit_trigger" && !currentSkillObserved
+          ? ["Explicit smoke did not expose the current candidate Skill; condition setup is invalid."]
         : [],
     failed_checks: failed,
     major_violations: majorViolations,

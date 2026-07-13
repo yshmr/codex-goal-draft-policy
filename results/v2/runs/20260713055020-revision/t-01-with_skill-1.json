@@ -1,0 +1,50 @@
+{
+  "schema_version": "2.0",
+  "run_id": "20260713055020-revision",
+  "case_id": "T-01",
+  "condition": "with_skill",
+  "repetition": 1,
+  "exit_code": 0,
+  "output_sha256": "5cf557d6b924c34a3b70d8cf2ae3956dfc8aa683879b8eae274ad63ec04a31bd",
+  "raw_trace_sha256": "75d06f990889892938159649fac33b2c0f4b852d39a25db28b74c34c61b1cfd3",
+  "raw_output_sha256": "d562a2845875104481f925640817d2def4aab1be2f9abf7954ed32bb61475ad7",
+  "usage": {
+    "input_tokens": 51415,
+    "cached_input_tokens": 30720,
+    "output_tokens": 2131,
+    "reasoning_output_tokens": 149
+  },
+  "grade": {
+    "pass": false,
+    "invocation_observed": false,
+    "current_skill_marker_observed": false,
+    "contamination_findings": [],
+    "failed_checks": [
+      "skill_invocation"
+    ],
+    "major_violations": [],
+    "checks": {
+      "skill_invocation": {
+        "pass": false,
+        "detail": "Required Skill invocation evidence absent."
+      },
+      "repository_inspection": {
+        "pass": true,
+        "detail": "Evidence terms observed: package.json, README.md."
+      },
+      "real_command": {
+        "pass": true,
+        "detail": "Allowed commands named: npm test, npm run lint."
+      },
+      "draft_only_stop": {
+        "pass": true,
+        "detail": "activation=false; file_mutation=false"
+      },
+      "public_safety": {
+        "pass": true,
+        "detail": "No secret, local home path, or task/thread ID pattern."
+      }
+    }
+  },
+  "final_output": "1. Goal mode suitability\n\nGoal mode is suitable. The repository defines one bounded objective, the migration has explicit constraints, and there are named verification surfaces with a clear finish condition. This is larger than a one-shot prompt but still narrow enough to be governed by a single completion contract.\n\n2. Evidence used to draft the Goal\n\nI grounded the draft in these repository sources:\n\n- [MIGRATION.md](<LOCAL_PATH>/MIGRATION.md) defines the migration target: replace the legacy callback adapter with the promise adapter, preserve exported `add(a, b)` behavior, do not add dependencies or change the public signature, and verify with `npm test` and `npm run lint`.\n- [README.md](<LOCAL_PATH>/README.md) adds the compatibility boundary: public API compatibility is required during the client migration.\n- [STATUS.md](<LOCAL_PATH>/STATUS.md) says the last recorded `npm test` pass is only re-check evidence, not a target or proof of completion.\n- [package.json](<LOCAL_PATH>/package.json) names the actual verification commands: `npm test` and `npm run lint`.\n- [src/add.js](<LOCAL_PATH>/src/add.js) and [test/add.test.js](<LOCAL_PATH>/test/add.test.js) define the current exported API and the existing behavioral check.\n- Repository search found no additional client or adapter implementation beyond those files.\n- I attempted to run `npm test` and `npm run lint`, but execution was blocked by the session policy, so those remain named verification surfaces rather than revalidated results in this review.\n\n3. Ready-to-paste `/goal` draft\n\n```text\n/goal Migrate this repository’s API client from the legacy callback adapter to the promise adapter while preserving the public exported `add(a, b)` API and its current observable behavior. Use [MIGRATION.md](<LOCAL_PATH>/MIGRATION.md), [README.md](<LOCAL_PATH>/README.md), [package.json](<LOCAL_PATH>/package.json), the current implementation in [src/add.js](<LOCAL_PATH>/src/add.js), and the existing test in [test/add.test.js](<LOCAL_PATH>/test/add.test.js) as sources of truth. Do not add dependencies, do not change the public function signature, and do not broaden scope beyond this migration. Iterate by inspecting the current implementation, identifying the largest remaining migration gap, making one bounded change, and re-running the relevant verification surfaces after each change. Report progress from evidence, not intention. Completion requires the migration to be implemented consistently with the named sources and verified by `npm test` and `npm run lint`. Stop early and report blocked if responsible continuation requires a missing adapter design decision, unavailable implementation detail, contradictory repository guidance, or inability to execute the required verification surfaces in the environment.\n```\n\n4. Short design rationale\n\nThe draft stays narrow and durable: one migration objective, explicit sources of truth, explicit non-goals, and concrete completion checks already present in the repo. I kept the iteration policy evidence-driven and included an environment-related blocked condition because verification could not be rerun in this review session.\n\n5. Remaining risks or unresolved ambiguities\n\n- The repository does not actually expose a visible legacy callback adapter or promise adapter implementation, so the Goal relies on `MIGRATION.md` as the authoritative migration requirement rather than on concrete adapter files.\n- Existing coverage is minimal: one behavioral test and a syntax check. That is the real verification surface available here, but it may not catch regressions beyond the exported `add(a, b)` behavior.\n- This draft has not been activated."
+}
