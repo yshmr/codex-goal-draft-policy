@@ -1,0 +1,85 @@
+{
+  "schema_version": "1.0-phase1-isolation",
+  "authority": "predeclared-before-phase1-provider-execution",
+  "frozen_on": "2026-07-13",
+  "objective": "Establish a reproducible candidate-only versus no-candidate/no-ambient-Skill isolation method on one synthetic fixture without changing the user's installed global Skill.",
+  "inherited_failure_authority": ["R-002", "R-003", "R-004", "R-005", "R-006", "R-007"],
+  "fixed_controls": {
+    "codex_version": "0.143.0",
+    "codex_package": "@openai/codex@0.143.0",
+    "model": "gpt-5.4",
+    "effort": "medium",
+    "sandbox": "read-only",
+    "session": "ephemeral",
+    "user_config": "ignored",
+    "container_platform": "linux/amd64",
+    "container_base": "node@sha256:358a55f9683d8444a810bf36ff1ea4f60522f55a82cada25f7eabdf79e445226",
+    "fixture": "evals/probes/isolation/PROBE.md",
+    "prompt": "$goal-draft-policy Review PROBE.md as a human-reviewable Goal draft and stop before activation. Keep the final response under 120 words.",
+    "condition_order": ["candidate", "baseline"]
+  },
+  "mechanical_witness": {
+    "marker": "PHASE1_NON_SEMANTIC_WITNESS_7F2C9A4E",
+    "candidate_required": [
+      "JSONL command_execution reads the repository candidate SKILL.md path",
+      "the fixed non-semantic marker is present in the structured trace",
+      "no Skill path outside the container repository candidate path is read"
+    ],
+    "baseline_required": [
+      "preflight inventory contains no .agents/skills entry",
+      "no goal-draft-policy SKILL.md read appears in JSONL",
+      "the fixed marker is absent from trace and final output",
+      "the host user profile is not among container mounts"
+    ],
+    "not_sufficient": ["final-output style", "bare directory listing", "self-report without source read"]
+  },
+  "condition_delta": {
+    "candidate": "Copy the committed candidate Skill into /workspace/.agents/skills/goal-draft-policy and append only the fixed HTML-comment witness.",
+    "baseline": "Do not create /workspace/.agents/skills.",
+    "all_other_inputs": "byte-identical within a hypothesis pair"
+  },
+  "hypotheses": [
+    {
+      "id": "H1-container-cwd-repository-skill",
+      "order": 1,
+      "repository_skill_location": "/workspace/.agents/skills/goal-draft-policy",
+      "cwd": "/workspace",
+      "claim": "A pinned container with an empty HOME and no host-profile mount isolates the repository candidate from the user's ambient global Skill."
+    },
+    {
+      "id": "H2-container-repo-root-ancestor-scan",
+      "order": 2,
+      "repository_skill_location": "/workspace/.agents/skills/goal-draft-policy",
+      "cwd": "/workspace/nested",
+      "claim": "If H1 cleanly fails, launching from a nested CWD tests the documented repository-root ancestor scan without changing any other isolation boundary."
+    }
+  ],
+  "maximum_trials": {
+    "hypotheses": 2,
+    "cells_per_hypothesis": 2,
+    "total_cells": 4,
+    "repetitions_per_cell": 1,
+    "retry": false,
+    "reorder": false,
+    "replacement": false,
+    "stop_after_first_adopt": true
+  },
+  "decision_gate": {
+    "adopt": "Fresh post-contract-commit pair has candidate witness PASS, baseline absence PASS, condition parity PASS, and published manifest/result/hash validation PASS.",
+    "reject": "Both cells complete normally but one or more mechanical isolation gates fail.",
+    "inconclusive": "Container, package installation, authentication, provider, or structured-event availability prevents a normal paired observation within the maximum trials."
+  },
+  "public_authority": {
+    "publish": ["sanitized result JSON", "manifest JSON", "SHA-256 sidecar", "short diagnosis/decision"],
+    "local_only": ["raw JSONL", "raw final output", "auth.json", "absolute host paths", "session/thread identifiers"],
+    "cleanup": "Remove only verified per-run auth/profile directories beneath .eval-work after hashing."
+  },
+  "prohibited": [
+    "full trigger or quality matrix",
+    "n=3",
+    "subjective or blind review",
+    "Goal E2E",
+    "modification of user global Skills or global configuration",
+    "reinterpretation or deletion of R-002 through R-007"
+  ]
+}
