@@ -2,7 +2,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { spawn, execFileSync } from "node:child_process";
-import { allCases, findUsage, parseJsonlLenient, readJson, repoRoot, sha256, stableJson, treeDigest } from "./lib.mjs";
+import { allCases, findUsage, parseJsonlLenient, readJson, repoRoot, resolveCodexInvocation, sha256, stableJson, treeDigest } from "./lib.mjs";
 import { gradeRun } from "./grader.mjs";
 
 function parseArgs(argv) {
@@ -68,11 +68,11 @@ const selected = options.ids.map((id) => {
 });
 
 const git = process.platform === "win32" ? "git.exe" : "git";
-const codex = process.platform === "win32" ? "codex.cmd" : "codex";
+const codex = resolveCodexInvocation();
 const dirty = execFileSync(git, ["status", "--porcelain"], { cwd: repoRoot, encoding: "utf8" }).trim();
 if (dirty && !options.allowDirty) throw new Error("Worktree must be clean before a provider-backed run. Commit the frozen contract and Skill first.");
 const skillCommit = execFileSync(git, ["rev-parse", "HEAD"], { cwd: repoRoot, encoding: "utf8" }).trim();
-const codexVersion = execFileSync(codex, ["--version"], { encoding: "utf8" }).trim();
+const codexVersion = execFileSync(codex.command, [...codex.prefix, "--version"], { encoding: "utf8" }).trim();
 const sourceCodexHome = process.env.CODEX_HOME || path.join(os.homedir(), ".codex");
 const timestamp = new Date();
 const runId = timestamp.toISOString().replace(/[-:TZ.]/g, "").slice(0, 14).toLowerCase() + `-${options.authority}`;
@@ -117,7 +117,7 @@ for (const caseDef of selected) {
         "-o", outputFile, caseDef.prompt
       ];
       console.log(`[${cellName}] ${codexVersion} ${contract.controlled_variables.model}/${contract.controlled_variables.effort}`);
-      const execution = await runProcess(codex, args, { cwd: workDir, env: { ...process.env, CODEX_HOME: isolatedHome }, stdio: ["ignore", "pipe", "pipe"] });
+      const execution = await runProcess(codex.command, [...codex.prefix, ...args], { cwd: workDir, env: { ...process.env, CODEX_HOME: isolatedHome }, stdio: ["ignore", "pipe", "pipe"] });
       const rawTrace = execution.stdout;
       const rawOutput = fs.existsSync(outputFile) ? fs.readFileSync(outputFile, "utf8") : "";
       fs.writeFileSync(path.join(cellRoot, "trace.jsonl"), rawTrace);

@@ -74,3 +74,11 @@ export function parseJsonlLenient(text) {
     try { return [JSON.parse(line)]; } catch { return []; }
   });
 }
+
+export function resolveCodexInvocation(platform = process.platform, nodeExecutable = process.execPath) {
+  if (platform === "win32") {
+    const script = path.join(path.dirname(nodeExecutable), "node_modules", "@openai", "codex", "bin", "codex.js");
+    if (fs.existsSync(script)) return { command: nodeExecutable, prefix: [script], strategy: "node-entrypoint" };
+  }
+  return { command: "codex", prefix: [], strategy: "path-launcher" };
+}

@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { allCases, readJson, repoRoot, sha256, stableJson, treeDigest, walkFiles } from "./lib.mjs";
+import { allCases, readJson, repoRoot, resolveCodexInvocation, sha256, stableJson, treeDigest, walkFiles } from "./lib.mjs";
 
 const updateFixtures = process.argv.includes("--update-fixtures");
 const errors = [];
@@ -161,6 +161,10 @@ validateSchemasAndContract();
 validateMarkdownLinks();
 validatePublicSafety();
 validatePublishedResults();
+const launcher = resolveCodexInvocation();
+if (process.platform === "win32" && launcher.strategy === "node-entrypoint") {
+  check(fs.existsSync(launcher.command) && fs.existsSync(launcher.prefix[0]), "Windows Codex node entrypoint resolution failed");
+}
 
 if (errors.length) {
   console.error(`Pure validation failed (${errors.length}):`);

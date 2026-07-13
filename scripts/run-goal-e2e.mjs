@@ -2,7 +2,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { execFileSync, spawn } from "node:child_process";
-import { allCases, findUsage, parseJsonlLenient, readJson, repoRoot, sha256, stableJson, treeDigest } from "./lib.mjs";
+import { allCases, findUsage, parseJsonlLenient, readJson, repoRoot, resolveCodexInvocation, sha256, stableJson, treeDigest } from "./lib.mjs";
 
 function args(argv) {
   const out = { id: "", approvalSha: "", publish: false, authority: "initial" };
@@ -40,10 +40,10 @@ const goalSha = sha256(goalText);
 if (goalSha !== options.approvalSha) throw new Error("Approval SHA does not match the exact checked-in GOAL.md. Review the changed Goal before activation.");
 
 const git = process.platform === "win32" ? "git.exe" : "git";
-const codex = process.platform === "win32" ? "codex.cmd" : "codex";
+const codex = resolveCodexInvocation();
 if (execFileSync(git, ["status", "--porcelain"], { cwd: repoRoot, encoding: "utf8" }).trim()) throw new Error("E2E requires a clean committed worktree.");
 const skillCommit = execFileSync(git, ["rev-parse", "HEAD"], { cwd: repoRoot, encoding: "utf8" }).trim();
-const codexVersion = execFileSync(codex, ["--version"], { encoding: "utf8" }).trim();
+const codexVersion = execFileSync(codex.command, [...codex.prefix, "--version"], { encoding: "utf8" }).trim();
 const contract = readJson(path.join(repoRoot, "evals", "contracts", "v2-predeclared.json"));
 const executedAt = new Date();
 const runId = `${executedAt.toISOString().replace(/[-:TZ.]/g, "").slice(0, 14).toLowerCase()}-${options.id.toLowerCase()}-${options.authority}`;
@@ -64,7 +64,7 @@ const commandArgs = [
   "-c", `model_reasoning_effort=\"${contract.controlled_variables.effort}\"`,
   "-o", outputFile, prompt
 ];
-const execution = await run(codex, commandArgs, { cwd: workDir, env: { ...process.env, CODEX_HOME: isolatedHome }, stdio: ["ignore", "pipe", "pipe"] });
+const execution = await run(codex.command, [...codex.prefix, ...commandArgs], { cwd: workDir, env: { ...process.env, CODEX_HOME: isolatedHome }, stdio: ["ignore", "pipe", "pipe"] });
 const rawTrace = execution.stdout;
 const rawOutput = fs.existsSync(outputFile) ? fs.readFileSync(outputFile, "utf8") : "";
 fs.writeFileSync(path.join(localRoot, "trace.jsonl"), rawTrace);
