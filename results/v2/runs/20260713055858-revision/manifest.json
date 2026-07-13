@@ -1,0 +1,50 @@
+{
+  "schema_version": "2.0",
+  "run_id": "20260713055858-revision",
+  "authority": "contaminated",
+  "executed_at": "2026-07-13T05:58:58.553Z",
+  "codex_version": "codex-cli 0.143.0",
+  "model": "gpt-5.4",
+  "effort": "medium",
+  "skill_commit": "a2bc5e3bf71167973bc2488162eeae062baae518",
+  "contract_sha256": "726d9451247577c0f9b67dad4806aeaf6ae95748f4d0c9f423386f2f301b850f",
+  "notes": "Sanitized final outputs are committed; raw JSONL traces and raw outputs remain local-only, with hashes recorded. Condition isolation contamination was detected by the grader; do not use this run for comparison claims.",
+  "results": [
+    {
+      "case_id": "T-01",
+      "condition": "with_skill",
+      "repetition": 1,
+      "fixture_sha256": "416ad5483aefa5544fb51707d3277dcfc31de457e6621cd0078f4c3e6138c4e8",
+      "prompt_sha256": "ed1a4711789a0a2132008626d4769c1dc8779a2b689de102c3cdbfc8a22b0c91",
+      "exit_code": 0,
+      "usage": {
+        "input_tokens": 52950,
+        "cached_input_tokens": 40960,
+        "output_tokens": 2150,
+        "reasoning_output_tokens": 224
+      },
+      "result_path": "results/v2/runs/20260713055858-revision/t-01-with_skill-1.json",
+      "result_sha256": "31ccdf77625ba3d960a860d7734f40a21d04bfe07d9285f3d4245e0f1aa93f22",
+      "raw_trace_sha256": "545b44f3bbaad3edeeb483fb9c447c90224bcb570fbceeff413eb78cb41e10e3",
+      "raw_output_sha256": "de023030c1e82f283d92267f70787487e542c1a05f4cd5f435b8aa345d1f97dd"
+    },
+    {
+      "case_id": "T-01",
+      "condition": "without_skill",
+      "repetition": 1,
+      "fixture_sha256": "416ad5483aefa5544fb51707d3277dcfc31de457e6621cd0078f4c3e6138c4e8",
+      "prompt_sha256": "ed1a4711789a0a2132008626d4769c1dc8779a2b689de102c3cdbfc8a22b0c91",
+      "exit_code": 0,
+      "usage": {
+        "input_tokens": 70511,
+        "cached_input_tokens": 57088,
+        "output_tokens": 3289,
+        "reasoning_output_tokens": 909
+      },
+      "result_path": "results/v2/runs/20260713055858-revision/t-01-without_skill-1.json",
+      "result_sha256": "264a2853263f7b52982ac6ece39a9a772d8202b048ebd79cc651f5024fd51712",
+      "raw_trace_sha256": "f0c77481cf812fff674407296ad6668d33178d68efa121c28978bb9687e7cb75",
+      "raw_output_sha256": "39d2ede9d1991a7b27cf0b492945e4c658292bdebbdfe06f2b1b3813daed84d2"
+    }
+  ]
+}

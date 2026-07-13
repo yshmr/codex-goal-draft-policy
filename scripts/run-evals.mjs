@@ -75,9 +75,6 @@ const skillCommit = execFileSync(git, ["rev-parse", "HEAD"], { cwd: repoRoot, en
 const codexVersion = execFileSync(codex.command, [...codex.prefix, "--version"], { encoding: "utf8" }).trim();
 const sourceCodexHome = process.env.CODEX_HOME || path.join(os.homedir(), ".codex");
 const globalSkillPath = path.join(os.homedir(), ".agents", "skills", "goal-draft-policy", "SKILL.md");
-const globalSkillDisable = fs.existsSync(globalSkillPath)
-  ? `skills.config=[{path=\"${globalSkillPath.replaceAll("\\", "/").replaceAll("\"", "\\\"")}\",enabled=false}]`
-  : "";
 const timestamp = new Date();
 const runId = timestamp.toISOString().replace(/[-:TZ.]/g, "").slice(0, 14).toLowerCase() + `-${options.authority}`;
 const localRoot = path.join(repoRoot, ".eval-work", runId);
@@ -114,12 +111,17 @@ for (const caseDef of selected) {
       if (condition === "with_skill") {
         fs.cpSync(path.join(repoRoot, "skill", "goal-draft-policy"), path.join(workDir, ".agents", "skills", "goal-draft-policy"), { recursive: true });
       }
+      const candidateSkillPath = path.join(workDir, ".agents", "skills", "goal-draft-policy", "SKILL.md");
+      const skillConfigEntries = [];
+      if (fs.existsSync(globalSkillPath)) skillConfigEntries.push(`{path=\"${globalSkillPath.replaceAll("\\", "/").replaceAll("\"", "\\\"")}\",enabled=false}`);
+      if (condition === "with_skill") skillConfigEntries.push(`{path=\"${candidateSkillPath.replaceAll("\\", "/").replaceAll("\"", "\\\"")}\",enabled=true}`);
+      const skillConfig = skillConfigEntries.length ? `skills.config=[${skillConfigEntries.join(",")}]` : "";
       const outputFile = path.join(cellRoot, "last-message.txt");
       const args = [
         "exec", "--ignore-user-config", "--ephemeral", "--json", "--sandbox", "read-only", "--skip-git-repo-check",
         "-C", workDir, "-m", contract.controlled_variables.model,
         "-c", `model_reasoning_effort=\"${contract.controlled_variables.effort}\"`,
-        ...(globalSkillDisable ? ["-c", globalSkillDisable] : []),
+        ...(skillConfig ? ["-c", skillConfig] : []),
         "-o", outputFile, caseDef.prompt
       ];
       console.log(`[${cellName}] ${codexVersion} ${contract.controlled_variables.model}/${contract.controlled_variables.effort}`);

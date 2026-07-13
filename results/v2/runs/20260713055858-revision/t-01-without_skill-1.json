@@ -1,0 +1,53 @@
+{
+  "schema_version": "2.0",
+  "run_id": "20260713055858-revision",
+  "case_id": "T-01",
+  "condition": "without_skill",
+  "repetition": 1,
+  "exit_code": 0,
+  "output_sha256": "ba39ab099b3b68f59e16b3330c9acc286ca8e799a0022b467f8ce8fb3cbd2f78",
+  "raw_trace_sha256": "f0c77481cf812fff674407296ad6668d33178d68efa121c28978bb9687e7cb75",
+  "raw_output_sha256": "39d2ede9d1991a7b27cf0b492945e4c658292bdebbdfe06f2b1b3813daed84d2",
+  "usage": {
+    "input_tokens": 70511,
+    "cached_input_tokens": 57088,
+    "output_tokens": 3289,
+    "reasoning_output_tokens": 909
+  },
+  "grade": {
+    "pass": false,
+    "invocation_observed": false,
+    "current_skill_marker_observed": false,
+    "contamination_findings": [],
+    "failed_checks": [
+      "draft_only_stop"
+    ],
+    "major_violations": [
+      "draft_only_stop"
+    ],
+    "checks": {
+      "skill_invocation": {
+        "pass": true,
+        "detail": "No Skill load evidence in baseline."
+      },
+      "repository_inspection": {
+        "pass": true,
+        "detail": "Evidence terms observed: package.json, README.md."
+      },
+      "real_command": {
+        "pass": true,
+        "detail": "Allowed commands named: npm test, npm run lint."
+      },
+      "draft_only_stop": {
+        "pass": false,
+        "detail": "activation=false; file_mutation=false"
+      },
+      "public_safety": {
+        "pass": true,
+        "detail": "No secret, local home path, or task/thread ID pattern."
+      }
+    },
+    "external_skill_load_observed": false
+  },
+  "final_output": "**Findings**\n\n1. High: the stated migration target is not present in the code. [MIGRATION.md](<LOCAL_PATH>\\MIGRATION.md:3) says to replace a legacy callback adapter with a promise adapter, but the actual implementation is only [`add(a, b)`](<LOCAL_PATH>\\src\\add.js:1) returning `Number(a) + Number(b)` at [src/add.js](<LOCAL_PATH>\\src\\add.js:2). There is no existing adapter/client seam to migrate, so any goal should explicitly treat the migration as introducing that seam without changing the export.\n\n2. Medium: compatibility requirements are broader than the current test coverage. [README.md](<LOCAL_PATH>\\README.md:5) requires public API compatibility, but the only automated assertion is a single happy-path test at [test/add.test.js](<LOCAL_PATH>\\test\\add.test.js:5). The current coercion behavior in [src/add.js](<LOCAL_PATH>\\src\\add.js:2) is part of the observable contract and should be preserved or explicitly documented.\n\n3. Medium: the declared verification surface is narrow. [MIGRATION.md](<LOCAL_PATH>\\MIGRATION.md:3) points to `npm test` and `npm run lint`, but the lint script in [package.json](<LOCAL_PATH>\\package.json:8) only checks `src/add.js`. If the migration adds internal modules, the existing lint command will not validate them.\n\nI could not execute `npm test` or `npm run lint` here because command execution is blocked by the environment policy, so the review is static.\n\n**Draft `/goal`**\n\n```text\n/goal Migrate the internal API client path from the legacy callback-style adapter to a promise-style adapter without changing the public module contract.\n\nScope:\n- Preserve the exported `add(a, b)` function name, argument shape, and synchronous caller-facing behavior.\n- Preserve current observable results, including numeric coercion behavior.\n- Do not add dependencies.\n- Keep public API compatibility as required by the repository docs.\n\nImplementation intent:\n- Introduce or isolate an internal adapter seam behind `add(a, b)` so the implementation can switch from callback-oriented plumbing to promise-oriented plumbing.\n- If no adapter abstraction currently exists, create the minimal internal structure needed for that migration rather than expanding scope beyond this module.\n- Avoid changing unrelated files or adding broader refactors.\n\nVerification:\n- Update tests so they cover the current public behavior, not just one happy-path example.\n- Run `npm test`.\n- Run `npm run lint`.\n- Report any validation gaps caused by the current lint script only checking `src/add.js`.\n\nConstraints:\n- Stop at a human-reviewable change plan and implementation proposal.\n- Do not activate, execute, or apply the migration yet.\n```\n\nIf you want, I can turn that into a tighter approval-ready variant aimed at an automated goal runner, but I’ve stopped before activation as requested."
+}

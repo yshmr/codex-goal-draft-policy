@@ -1,7 +1,7 @@
 # R-004 decision
 
-Status: pending clean explicit smoke after revision commit.
+Status: `REJECT` disable-only config as a complete paired-condition solution.
 
-- Adopt if the with-Skill cell reads only the repository-local current Skill and baseline reads no Goal Draft Skill.
-- Reject if the real-profile path is still loaded.
-- Inconclusive if the Codex config override prevents startup or disables both copies.
+- Evidence: run `20260713055858-revision` showed no external Skill load, so the real-profile disable worked.
+- Failure: explicit with-Skill T-01 also failed to expose the repository candidate. The same-name disable entry was insufficient by itself.
+- Follow-up: R-005 adds an explicit enable entry for the candidate's exact repository-local path.

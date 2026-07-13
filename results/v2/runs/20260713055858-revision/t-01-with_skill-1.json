@@ -1,0 +1,53 @@
+{
+  "schema_version": "2.0",
+  "run_id": "20260713055858-revision",
+  "case_id": "T-01",
+  "condition": "with_skill",
+  "repetition": 1,
+  "exit_code": 0,
+  "output_sha256": "0a4ef0842797e17f420720d31f175a2daaee9436ee7de89174bfc3dfc0d3b964",
+  "raw_trace_sha256": "545b44f3bbaad3edeeb483fb9c447c90224bcb570fbceeff413eb78cb41e10e3",
+  "raw_output_sha256": "de023030c1e82f283d92267f70787487e542c1a05f4cd5f435b8aa345d1f97dd",
+  "usage": {
+    "input_tokens": 52950,
+    "cached_input_tokens": 40960,
+    "output_tokens": 2150,
+    "reasoning_output_tokens": 224
+  },
+  "grade": {
+    "pass": false,
+    "invocation_observed": false,
+    "current_skill_marker_observed": false,
+    "contamination_findings": [
+      "Explicit smoke did not expose the current candidate Skill; condition setup is invalid."
+    ],
+    "failed_checks": [
+      "skill_invocation"
+    ],
+    "major_violations": [],
+    "checks": {
+      "skill_invocation": {
+        "pass": false,
+        "detail": "Required Skill invocation evidence absent."
+      },
+      "repository_inspection": {
+        "pass": true,
+        "detail": "Evidence terms observed: package.json, README.md."
+      },
+      "real_command": {
+        "pass": true,
+        "detail": "Allowed commands named: npm test, npm run lint."
+      },
+      "draft_only_stop": {
+        "pass": true,
+        "detail": "activation=false; file_mutation=false"
+      },
+      "public_safety": {
+        "pass": true,
+        "detail": "No secret, local home path, or task/thread ID pattern."
+      }
+    },
+    "external_skill_load_observed": false
+  },
+  "final_output": "**Goal Mode Suitability**\n\nGoal mode is suitable. The repository points to one durable outcome: migrate the API client from the legacy callback adapter to the promise adapter while preserving the exported `add(a, b)` API. The scope is larger than a one-off prompt, has explicit boundaries, and has named verification surfaces plus a clear blocked condition.\n\n**Evidence Used To Draft The Goal**\n\n- [MIGRATION.md](<LOCAL_PATH>/MIGRATION.md:1) defines the migration target, compatibility requirement, and verification commands: `npm test` and `npm run lint`.\n- [README.md](<LOCAL_PATH>/README.md:1) states public API compatibility is required and explicitly says the repo does not define latency, coverage, cost, or quality thresholds.\n- [STATUS.md](<LOCAL_PATH>/STATUS.md:1) records a prior `npm test` pass and says that status is evidence to re-check, not a new target.\n- [package.json](<LOCAL_PATH>/package.json:1) confirms the concrete verification commands: `node --test` and `node --check src/add.js`.\n- [src/add.js](<LOCAL_PATH>/src/add.js:1) shows the current public export shape.\n- [test/add.test.js](<LOCAL_PATH>/test/add.test.js:1) shows the existing automated behavior check.\n- I attempted to run `npm test` and `npm run lint`, but command execution was blocked by the current environment policy, so the draft treats those as named verification surfaces rather than newly confirmed results.\n\n**Ready-To-Paste `/goal` Draft**\n\n```text\n/goal Migrate the API client by replacing the legacy callback adapter with the promise adapter while preserving the exported `add(a, b)` behavior and public function signature in `src/add.js`.\n\nSources of truth and boundaries:\n- Follow `MIGRATION.md`, `README.md`, `STATUS.md`, `package.json`, existing code in `src/add.js`, and tests in `test/add.test.js`.\n- Preserve public API compatibility for consumers of `add(a, b)`.\n- Do not add dependencies.\n- Do not change the exported function signature.\n- Do not introduce new success metrics; the repo defines no latency, coverage, cost, or quality threshold beyond the named verification surfaces.\n\nVerification surfaces:\n- `npm test`\n- `npm run lint`\n- Confirm the resulting implementation still exports `add(a, b)` from `src/add.js` and preserves the tested behavior.\n\nIteration policy and checkpoints:\n- Inspect the current adapter-related implementation and repo evidence.\n- Identify the largest remaining gap between current code and `MIGRATION.md`.\n- Take one bounded next action toward the migration.\n- Re-run the relevant verification surfaces after each meaningful change.\n- Report concise evidence-based progress updates, including any mismatch between the migration requirement and the current code or tests.\n\nStopping condition:\n- Stop when the promise-adapter migration is implemented, the exported `add(a, b)` API remains compatible, and the named verification surfaces pass.\n- Stop and report blocked if responsible continuation requires a missing product or technical decision, the migration instructions conflict with the actual repository state, or the verification surfaces are unavailable or insufficient to confirm compatibility.\n```\n\n**Short Design Rationale**\n\nThe draft stays narrow because the repository already defines the objective and boundaries. It names only repository-backed verification, avoids inventing performance or quality targets, and includes a concrete blocked condition tied to instruction conflicts or unavailable verification.\n\n**Remaining Risks Or Unresolved Ambiguities**\n\n- The current repo snapshot does not visibly contain an actual callback adapter or promise adapter, so the migration may require clarifying where that adapter logic lives or whether this fixture abstracts it away.\n- Existing tests cover only one arithmetic case; they verify current behavior, but they may not fully prove compatibility if the migration affects broader input handling.\n- The stated verification commands could not be executed in this environment, so their current pass/fail state remains unconfirmed here.\n\nThe draft has not been activated."
+}
