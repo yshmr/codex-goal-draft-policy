@@ -1,0 +1,195 @@
+{
+  "schema_version": "1.0-phase3-structured-action-witness",
+  "authority": "predeclared-before-phase3-detector-and-provider-execution",
+  "frozen_on": "2026-07-13",
+  "objective": "Evaluate one final representation-independent structured action witness using pure fixtures first and then exactly one fresh candidate/baseline provider pair.",
+  "inherited_immutable_authority": {
+    "revisions": ["R-002", "R-003", "R-004", "R-005", "R-006", "R-007", "R-008", "R-009", "R-010", "R-011", "R-012", "R-013"],
+    "phase1_contract": "evals/contracts/phase1-isolation.json",
+    "phase1_decision": "REJECT hypothesis family",
+    "phase2_contract": "evals/contracts/phase2-mechanical-witness.json",
+    "phase2_decision": "REJECT",
+    "interpretation_guard": "Phase 1 and Replacement Phase 2 contracts, manifests, results, revisions, and decisions remain immutable and are not re-scored, republished, relabeled, or reinterpreted. In particular, the Phase 2 marker is not promoted after the fact."
+  },
+  "phase_position": {
+    "name": "Final Remediation Phase 3 structured action witness",
+    "last_isolation_remediation": true,
+    "paired_smoke_entry_before_decision": false,
+    "on_non_adopt": "Do not create another isolation hypothesis, retry, replacement, or remediation; hand the bounded REJECT/INCONCLUSIVE program to closeout selection."
+  },
+  "hypothesis": {
+    "id": "H1-structured-source-then-action",
+    "claim": "After reading the byte-derived candidate Skill, Codex emits a separate completed exit-0 command event whose output bytes are exactly the marker plus LF, while a no-Skill baseline remains source/action/marker/ambient-read free."
+  },
+  "fixed_controls": {
+    "codex_version": "0.143.0",
+    "codex_package": "@openai/codex@0.143.0",
+    "model": "gpt-5.4",
+    "effort": "medium",
+    "inner_sandbox": "disabled via --dangerously-bypass-approvals-and-sandbox inside outer container only",
+    "session": "ephemeral",
+    "user_config": "ignored",
+    "container_platform": "linux/amd64",
+    "container_base": "node@sha256:358a55f9683d8444a810bf36ff1ea4f60522f55a82cada25f7eabdf79e445226",
+    "runtime_image_id": "sha256:480f80aca635842cc14e032a63cd9ce0bbfebf2751dfa7e470d6840706efa813",
+    "network": "bridge",
+    "container_runtime": {
+      "remove_after_exit": true,
+      "mounts": [],
+      "binds": [],
+      "published_ports": [],
+      "privileged": false,
+      "cap_drop": ["ALL"],
+      "security_opt": ["no-new-privileges:true"],
+      "cpus": "2",
+      "memory": "2g",
+      "pids_limit": 256,
+      "workspace": "/workspace",
+      "codex_home": "/codex-home",
+      "home": "/home/phase3"
+    },
+    "fixture": "evals/probes/isolation/PROBE.md",
+    "fixture_tree_sha256": "0365706d14c8f1e9a82e29681d810ea35adc08b36d9f1cd33f53747ab639578d",
+    "prompt": "Review PROBE.md and draft a concise, human-reviewable completion contract. Stop before activation, do not edit files, and keep the final response under 120 words.",
+    "prompt_sha256": "81be95f7c6f83e1d36232764b2eee8222edac21a7a0d9c5929e100b261367055",
+    "condition_order": ["candidate", "baseline"],
+    "repetitions_per_cell": 1
+  },
+  "outer_isolation_boundary": {
+    "workspace_transfer": "Copy a synthetic workspace from the verified per-run temp root into a stopped container with docker cp; use no mount or bind.",
+    "auth_transfer": "Use one verified per-cell temporary auth copy, copy it with docker cp, never display or publish its bytes/hash, and remove only the verified temp path after the cell.",
+    "preflight_before_provider": [
+      "zero Docker Mounts, HostConfig.Binds, HostConfig.Mounts, and Config.Volumes",
+      "fixed image ID and linux/amd64 platform",
+      "bridge network and no published ports",
+      "Privileged false, CapDrop ALL, no-new-privileges true",
+      "fixed 2 CPU, 2 GiB memory, and 256 PID limits",
+      "command includes --dangerously-bypass-approvals-and-sandbox and --ephemeral",
+      "baseline inventory has no .agents/skills directory",
+      "no Docker socket, host profile, host checkout, repository, or arbitrary host directory exposure"
+    ]
+  },
+  "candidate_test_copy": {
+    "source_path": "skill/goal-draft-policy",
+    "source_tree_sha256": "12f2659e171d6441154167029143845abc15b90da6f967cef8bcffaee0394d22",
+    "base_skill_file_sha256": "ddff2d4cd100cddfdfee1b2d6a200c7fb2f9ddefdaa99133be0685433e8ee822",
+    "derived_skill_file_sha256": "7d54d3784ef5a5fd37199cc49d283c750f9c9ee4d1cc61ec235e2edabc845c45",
+    "derived_tree_sha256": "178122b60681d9d241ef9f688c8c265461e211368c8d7443fa9e909dc65651b4",
+    "destination": "/workspace/.agents/skills/goal-draft-policy",
+    "exact_append_utf8": "\n## Test-only structured action witness\n\nIf and only if this Skill is invoked for the current request, run exactly one harmless, filesystem-nonchanging command action whose stdout is exactly PHASE3_STRUCTURED_ACTION_WITNESS_91C6E2AF followed by one LF byte. Do not mention the action or marker in the final response.\n",
+    "delta_classification": "One test-only marker action instruction; production candidate bytes remain unchanged.",
+    "baseline": "Do not create /workspace/.agents/skills."
+  },
+  "detector": {
+    "input": "Ordered parsed JSONL events, final agent message, exact base and derived Skill bytes, logical derived Skill target, condition inventory, and fixed marker bytes.",
+    "source_read": {
+      "event_type": "item.completed",
+      "item_type": "command_execution",
+      "status": "completed",
+      "exit_code": 0,
+      "target": "Normalize only path separators and require the derived SKILL.md path token; do not compare the command wrapper or quoting.",
+      "output": "Aggregated output must contain the full exact derived SKILL.md UTF-8 bytes whose frozen SHA-256 is candidate_test_copy.derived_skill_file_sha256."
+    },
+    "action": {
+      "event_type": "item.completed",
+      "item_type": "command_execution",
+      "status": "completed",
+      "exit_code": 0,
+      "output_field": "Use stdout when present, otherwise aggregated_output; if both are present they must be byte-identical.",
+      "marker": "PHASE3_STRUCTURED_ACTION_WITNESS_91C6E2AF",
+      "terminal_newline": "LF",
+      "expected_utf8_bytes": 42,
+      "expected_output_sha256": "8a8b72b7950b90b25000d04b4c8969a4c881f8c984c9127cdae02451aec24955",
+      "exact_output": "PHASE3_STRUCTURED_ACTION_WITNESS_91C6E2AF\n",
+      "command_field_examined": false,
+      "cardinality": "exactly one qualifying action event"
+    },
+    "ordering": "A qualifying source-read completed-event ordinal is lower than the qualifying action completed-event ordinal, and opaque item IDs are present and unequal.",
+    "not_action_witness": [
+      "marker in source-read output",
+      "marker in final prose",
+      "directory inventory",
+      "self-report",
+      "candidate-like output",
+      "marker in a command field"
+    ],
+    "baseline_absence": "Inventory empty; zero qualifying source reads; zero qualifying actions; marker absent from final output; zero ambient Skill reads. An ambient read is a completed exit-0 command event with a normalized SKILL.md path token and output containing the exact committed base Skill bytes.",
+    "sanitized_public_evidence": [
+      "completed-event ordinals",
+      "event/item types",
+      "status and exit code",
+      "distinct identity and source-before-action booleans",
+      "exact output byte length and SHA-256",
+      "source/action/ambient counts",
+      "raw trace/output hashes",
+      "sanitized final output"
+    ],
+    "local_only": ["raw commands", "raw item/session/thread identifiers", "raw paths", "raw JSONL", "stderr", "auth bytes and hash", "absolute host paths"]
+  },
+  "required_pure_fixtures": [
+    "PASS: action shell wrapper differs but separate post-source completed exit-0 action output is exact marker plus LF",
+    "FAIL: marker exists only in source-read output",
+    "FAIL: marker exists only in final prose",
+    "FAIL: action precedes source read",
+    "FAIL: action exit is nonzero",
+    "FAIL: action is incomplete",
+    "FAIL: action output has additional bytes",
+    "FAIL: source read is absent",
+    "FAIL: baseline contains marker, qualifying action, or ambient read"
+  ],
+  "condition_delta": {
+    "candidate": "Add only the byte-derived Phase 3 candidate test-copy directory.",
+    "baseline": "No .agents/skills directory.",
+    "all_other_inputs": "Byte-identical prompt, fixture, Codex version, model, effort, runtime image, network, auth bytes, runtime controls, and fixed candidate-then-baseline order."
+  },
+  "maximum_trials": {
+    "hypotheses": 1,
+    "pairs": 1,
+    "cells_per_pair": 2,
+    "total_cells": 2,
+    "repetitions_per_cell": 1,
+    "retry": false,
+    "reorder": false,
+    "parameter_tuning": false,
+    "additional_hypothesis": false,
+    "replacement": false,
+    "post_hoc_detector_change": false
+  },
+  "decision_gate": {
+    "adopt": [
+      "candidate source-read then separate qualifying action PASS",
+      "baseline absence PASS",
+      "outer container boundary PASS",
+      "pair controls parity PASS",
+      "fresh post-contract and post-detector-test pair PASS",
+      "manifest, sanitized result, sidecar hash, and tracked public-safety validation PASS"
+    ],
+    "adopt_label": "ADOPT witness method",
+    "adopt_meaning": "Adopt only the isolation witness method; do not infer Skill quality superiority or paired-comparison success.",
+    "reject": "Both cells are normal but at least one gate is false.",
+    "inconclusive": "Container, auth, provider, or structured-event infrastructure prevents a normal paired observation.",
+    "stop": "Publish exactly one decision and perform no retry, reorder, replacement, detector change, additional isolation hypothesis, or paired smoke in this phase."
+  },
+  "next_phase": {
+    "entry_only_if": "ADOPT witness method",
+    "name": "valid paired smoke",
+    "maximum_pairs": 2,
+    "maximum_cells": 4,
+    "repetitions_per_cell": 1,
+    "retry": false,
+    "start_in_phase3": false,
+    "non_adopt_closeout": "Record that further isolation remediation is prohibited and list bounded REJECT/INCONCLUSIVE closeout as the next decision."
+  },
+  "prohibited": [
+    "full 16-trigger or 12-quality matrix",
+    "critical n=3",
+    "blind review",
+    "E2E",
+    "real Goal lifecycle",
+    "paired smoke execution",
+    "production candidate modification",
+    "host-checkout sandbox bypass",
+    "persistent user/global Skill or config changes",
+    "modification, deletion, rescoring, republication, relabeling, or reinterpretation of R-002 through R-013 or Phase 1/2 authority"
+  ]
+}
