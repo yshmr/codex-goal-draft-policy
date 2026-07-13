@@ -1,117 +1,183 @@
-# goal-draft-policy
+# codex-goal-draft-policy
 
-## About
+## 60秒概要
 
-Codex Skill `goal-draft-policy` の source of truth、評価契約、manual behavioral evaluation result、設計根拠を管理するリポジトリです。
+これは、Codexの`/goal`を**有効化する前**に、人間がレビューできるcompletion contractを作成・批評するinstall可能なSkillと、そのSkillを再現可能に評価する独立repositoryです。
 
-このリポジトリは、Codex Skill `goal-draft-policy` の開発、評価、バージョン管理を行う場所です。
+- 問題: 長時間タスクを「続けること」だけでGoal化すると、完了証拠、停止条件、評価の公平性、Skillの誤発火が曖昧になります。
+- Codex固有の価値: explicit/implicit Skill invocation、`/goal`のthread-scoped lifecycle、draftとactivationの責任境界を直接評価します。
+- 配布物: [`skill/goal-draft-policy`](skill/goal-draft-policy/) がinstall単位です。
+- 評価物: 16 trigger case、12 draft-quality case、3 E2E case、8 synthetic fixture、`codex exec --json` runner、deterministic grader、schema/hash/safety validatorがあります。
+- authority: 既存v1 manual resultは`KEEP v1`。v2のprovider-backed resultはmanifest単位で初回・revision・failed・contaminated等を分離します。未実行結果を成功として扱いません。
+- claim境界: OpenAI公認、production保証、Codex reliability一般、統計的有意性は主張しません。
 
-この Skill は、長時間・複数ターン・反復的・証拠駆動の作業に対して、人間が確認してから使える Codex `/goal` completion contract を作成またはレビューします。スコープは human-review-before-activation です。つまり、Goal draft を準備または批評し、activation や execution の前で停止します。
+## Problem
 
-## Skill と Goal workflow の境界
+Goal draftの品質とSkill routingは別問題です。良いdraftでもone-off requestへ誤発火すればworkflowを妨げ、正しく発火しても実在しないcommand、post-hoc threshold、preferred candidateの勝利、曖昧なblockerをcompletion contractへ入れれば、長時間実行の判定が歪みます。
 
-`goal-draft-policy` は、人間が確認できる Goal completion contract を作成・レビューするための policy です。この Skill の境界は reviewed draft までです。Goal activation、persistence、continuation、execution、completion auditing は、この Skill の外側にある別の workflow decision です。この Skill を必須の Goal governance gate として説明しないでください。
+このrepositoryは次を分離して扱います。
 
-## このリポジトリの役割
+1. CodexがSkillを使うべきrequestか。
+2. Skillがrepository/artifact evidenceを調べたか。
+3. reviewed draftがoutcome、verification、constraints、iteration、stoppingを正直に固定したか。
+4. 人間承認後の別workflowで実Goalを実行できるか。
 
-このリポジトリは、以下の source of truth です。
+## Codex固有の設計
 
-- `goal-draft-policy` Skill source
-- trigger / scope routing の evaluation contract
-- Goal draft quality rubric
-- representative repository による manual behavioral evaluation observation
-- versioned failure mode と tendency
-- policy revision と regression baseline
+OpenAIの公開資料では、Goalはdurable objectiveとlifecycleを持つthread-scoped completion contractで、Skillは`name`/`description`からexplicitまたはimplicitに選ばれます。本projectはその上に、次のlocal policyを置きます。
 
-ここは、外部プロジェクトの evaluation を再実行したり、provider-backed evaluation run を管理したり、representative repository copy を保存したり、behavioral evaluation execution environment を維持したりする場所ではありません。評価実行は representative repository、scratch repository、または isolated worktree で行い、このリポジトリには結果の observation だけを保存します。
+- explicit `$goal-draft-policy`: 必ずreviewed draftで停止。
+- implicit invocation: Goal draft/review requestに限定。
+- implicit除外: combined draft+execute、one-off、通常plan、`/goal`説明質問、active Goal continuation、近似語。
+- evaluation: adopt/reject/inconclusiveをすべてvalid endingにできる。
+- fixed target: measurableであることと、事前に固定されたthresholdがあることを分離。
+- investigation: largest evidence gapからbounded next actionを選び、1回の失敗をblockerにしない。
 
-## Skill source とインストール
+公式事実、project method、推論、tested observationの区分は[`docs/provenance-v2.md`](docs/provenance-v2.md)にあります。
 
-repository 側の source of truth は次です。
+## Install / use
 
-`skill/goal-draft-policy/SKILL.md`
-
-通常の install には `skill-installer` を使ってください。Codex に次のように依頼します。
+Codexへ次のように依頼します。
 
 ```text
 $skill-installer で https://github.com/yshmr/codex-goal-draft-policy/tree/main/skill/goal-draft-policy をインストールしてください。
 ```
 
-install 後は Codex を restart して、新しい Skill を読み込ませてください。
+または、[`skill/goal-draft-policy`](skill/goal-draft-policy/)をCodexのuser/repository Skill locationへ配置します。`agents/openai.yaml`はUI metadataと`allow_implicit_invocation: true`を明示しています。
 
-## リポジトリ構成
+Explicit use:
 
 ```text
-codex-goal-draft-policy/
-├── README.md
-├── docs/
-│   ├── design-basis.md
-│   └── define-goal-comparison.md
-├── skill/
-│   └── goal-draft-policy/
-│       └── SKILL.md
-├── evals/
-│   ├── test-cases.md
-│   └── rubric.md
-├── results/
-│   └── v1-evaluation.md
-├── scripts/
-│   └── sync-skill.ps1
-└── CHANGELOG.md
+$goal-draft-policy
+このmonorepoのCI整合性改善を、実行前にレビューできる /goal completion contractへしてください。
+まだGoalを有効化・実行しないでください。
 ```
 
-## 評価方針
+Implicit use:
 
-このリポジトリの評価は manual behavioral evaluation であり、統計的に有意な model performance claim ではありません。Trigger routing と draft quality scoring は別々の評価対象です。
+```text
+この比較実験を、結果を見る前に評価contractを固定したreviewed /goal draftへしてください。
+承認前には実行しないでください。
+```
 
-- trigger case は、Skill を invoke すべきかどうかを確認します。
-- quality case は、Skill が invoke された後の reviewed draft の品質を採点します。
+## 入力 → reviewed draftの例
 
-v1 の代表評価では主に `ai_development_support_workbench` repository を使いました。context contamination を減らすため、可能な範囲で case は別 thread または isolated worktree で実行しました。
+入力:
 
-## 現在の v1 結果
+```text
+$goal-draft-policy EVAL.mdのbaselineとcandidateを比較するGoalを作って。candidateを採用できるまで改善して。
+```
 
-Decision: `KEEP v1`
+期待されるreview:
 
-v1 evaluation は、positive trigger case、explicit invocation precedence、scope revision 後の combined draft-and-execute exclusion、negative control、選択した draft quality case を pass しました。scope revision 後に major quality violation は観測されていません。
+```text
+Goal mode suitability: 複数反復と固定評価contractがあるため適する。
+Evidence: EVAL.md、cases.json、go.mod、go test ./...
 
-regression monitoring 用に、既知の minor observation を追跡しています。
+/goal EVAL.mdで事前固定されたpopulation、baseline、candidate、scoring ruleを変更せず評価し、
+go test ./... と指定reportで証拠を残す。candidateのadopt、reject、inconclusiveはいずれも
+証拠が支えるvalid completionとする。各反復では最大のevidence gapへ1つのbounded actionを行う。
+必要caseまたはrunnerが利用不能で代替経路が尽きた場合は、試行、blocker、解除に必要なinputを報告する。
+```
 
-- O-01: optimization-specific stopping leakage
-- O-02: broad reframe scope
-- O-03: already-achieved fixed target substitution
+Skillはこのdraftをactivateしません。人間が確認した後、別のGoal workflowで有効化します。
 
-これらは observation であり、v1 の defect と主張しているものではありません。
+## Evaluation program
 
-## 今後の回帰評価
+事前固定contractは[`evals/contracts/v2-predeclared.json`](evals/contracts/v2-predeclared.json)です。provider出力を見る前にcase、rubric、metric、baseline、model/effort、fixture、gate、valid decision endingを固定します。
 
-Skill policy を変更する前に、必要に応じて evaluation contract を更新してください。意味のある Skill change の後は、少なくとも次を再実行してください。
+- Trigger set: explicit、implicit、contextual、combined、one-off、planning、existing Goal review、説明質問、active continuation、日本語、近似誤発火を含む16件。
+- Quality set: suitability、grounding、outcome、verification、constraints、iteration、stopping、scope disciplineを扱う12件。
+- Fixtures: Node、Python、Go、monorepo、no-repository、および3つのE2E fixture。
+- Baseline: `without_skill`。`with_skill`と同じCodex version、model、effort、prompt、fixtureでpaired comparisonします。
+- Repetition: critical stochastic caseはaccess/budgetが許すときn=3。小さいrunはpartialと表示します。
+- Grading: objective checksはdeterministic。主観8軸だけconditionを隠したmanual/model reviewを許します。
+- Claims: descriptive deltaのみ。統計的有意性は主張しません。
 
-- T02
-- T03
-- T05
-- T06
-- T06-E
-- T07
-- T08
-- Q02
-- Q03
-- Q04
+詳細は[`docs/evaluation-design-v2.md`](docs/evaluation-design-v2.md)、grader実装は[`scripts/grader.mjs`](scripts/grader.mjs)、schemaは[`evals/schemas`](evals/schemas/)です。
 
-実利用で見つかった failure mode は、policy change の前または同時に regression case として追加してください。評価した context、expected behavior、result、confidence、decision impact が理解できる十分な detail を `results/` に記録します。
+## 現在の結果とauthority
 
-このリポジトリは、この Skill policy に対する OpenAI endorsement を主張しません。また、Codex reliability の一般的な証明として提示しないでください。
+| Authority | 状態 | 解釈 |
+|---|---|---|
+| v1 manual evaluation | `KEEP v1` | T06初回failure、revision、clean retest、O-01/O-02/O-03を保存。上書きしない。 |
+| v2 predeclared contract | frozen | provider実行前のcase/rubric/gate authority。 |
+| v2 provider result | manifest参照 | 実行済みmanifestだけが結果authority。ない場合は未実行。 |
+| `/goal` E2E | case別 | 実行可能性と人間承認境界を含め、実測したcaseだけを結果として扱う。 |
 
-## 設計根拠
+完全な索引は[`results/authority-index.md`](results/authority-index.md)です。passing rerunは過去failureを置き換えません。
 
-この policy shape は、OpenAI Codex Goal guidance と公開されている Codex Goal continuation / completion-audit behavior の一部を土台にしています。Public continuation behavior は evidence / verification / blocker discipline に影響し、evaluation integrity、fixed-target provenance、bounded investigation は project-specific extension として追加しています。T06 behavioral failure により、combined draft-and-execute request の invocation / workflow boundary が変更されました。
+## Reproduce
 
-詳細な design provenance は `docs/design-basis.md` に記録しています。
+Pure validation（provider/API不要）:
 
-## OpenAI `define-goal` との関係
+```bash
+npm test
+```
 
-`goal-draft-policy` v1 は、OpenAI curated `define-goal` を original design input として扱っていません。v1 の設計根拠は `docs/design-basis.md` に記録した sources と manual behavioral evaluation に基づきます。
+fixture hash更新（fixtureを意図的に変更した時だけ）:
 
-Retrospective comparison では、general Goal-definition principles にいくつかの convergence が見られました。一方で、この Skill は reviewed-draft workflow boundary と、evaluation integrity、fixed-target provenance、bounded technical investigation の project-specific policy を維持しています。
+```bash
+npm run fixtures:update
+npm test
+git diff --exit-code
+```
 
-詳細は `docs/define-goal-comparison.md` に記録しています。
+選択したCodex-backed paired run:
+
+```bash
+node scripts/run-evals.mjs --ids T-01,T-04,Q-01,Q-02 --max-repetitions 3 --publish
+```
+
+runnerはCodex version、model、effort、実行日時、Skill commit、fixture SHA、prompt SHA、exit code、usage、raw trace/output SHAをmanifestへ記録します。raw JSONLにはsession identifierやlocal pathが含まれ得るためcommitせず、sanitized final outputとhashだけを公開します。
+
+GitHub Actionsはfrontmatter、schema、ID重複、Markdown link、result/hash、fixture integrity、public safety、生成差分をpure validationします。認証・費用・stochasticityを伴うprovider/Codex-backed evalは通常pushで実行しません。
+
+## OpenAI `define-goal`との責任差
+
+OpenAI curated `define-goal`とlocal Skillを単純な勝敗比較にはしません。共通のcontract-quality軸は、具体的outcome、実在verification、scope、停止条件です。
+
+責任境界が異なります。
+
+- `define-goal`: general Goal creation/refinement workflow。確認したofficial Skill textではquality bar後のGoal creation responsibilityを持ちます。
+- `goal-draft-policy`: human-review-before-activation専用。reviewed draftを返して停止し、activation、persistence、continuation、execution、completion auditを担当しません。
+
+local Skillの独自価値は、activationしないこと、evaluation integrity、fixed-target provenance、bounded investigation、failure-preserving evaluation programです。これは`define-goal`が劣るという主張ではありません。v1 provenanceを保った詳細は[`docs/define-goal-comparison.md`](docs/define-goal-comparison.md)にあります。
+
+## 制約
+
+- `codex exec --json` event shape、Skill discovery、model availabilityはCodex versionに依存します。
+- deterministic graderは表層的な必要条件を検査し、文章品質全体を証明しません。
+- synthetic fixtureはreal repositoryの全分布を代表しません。
+- provider runはstochasticかつ費用・認証を要します。
+- E2Eはisolated synthetic fixtureに限定し、production systemを操作しません。
+- v1 manual observationは現在のautomated harnessで再解釈しません。
+
+## Claims to Avoid
+
+このrepositoryについて、次を主張しないでください。
+
+- OpenAI公認・推奨・認証済み。
+- Codex reliability一般の証明。
+- production guaranteeまたは全repositoryでの安全保証。
+- 統計的有意性やpopulation-level superiority。
+- `define-goal`に対する単純な勝利。
+- 未実行case、failed/contaminated run、blind review未実施軸の成功。
+
+## Repository map
+
+```text
+skill/goal-draft-policy/       install可能なSkill source
+evals/contracts/               provider実行前に固定するcontract
+evals/cases/                   JSONL case set
+evals/schemas/                 case/result/manifest/review schema
+fixtures/                      synthetic evidence surfaces + integrity manifest
+scripts/run-evals.mjs          codex exec --json paired runner
+scripts/grader.mjs             deterministic grader
+scripts/validate.mjs           pure validator / safety scan
+results/                       immutable authority indexと実行result
+docs/                          provenance、設計、E2E、review guide
+.github/workflows/validate.yml pure CI only
+```
+
+MIT licensed. See [`LICENSE`](LICENSE).

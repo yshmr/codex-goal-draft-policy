@@ -1,5 +1,7 @@
 # Retrospective Comparison with OpenAI define-goal
 
+Current source rechecked: 2026-07-13. The official Skill still checks active Goal state and calls `create_goal` after its quality bar when appropriate. This recheck updates source currency only; it does not alter v1 design provenance or turn this document into a competitive ranking.
+
 ## Historical status
 
 `define-goal` は `goal-draft-policy` v1 の original design input ではありません。この文書は、v1 の design provenance を保ったうえで OpenAI curated `define-goal` との関係を整理する retrospective comparison です。
