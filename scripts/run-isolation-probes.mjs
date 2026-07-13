@@ -91,6 +91,7 @@ const buildRoot = path.join(localRoot, "image-build");
 fs.mkdirSync(buildRoot, { recursive: true });
 const dockerfile = [
   `FROM ${contract.fixed_controls.container_base}`,
+  "RUN apt-get update && apt-get install --yes --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/*",
   `RUN npm install --global ${contract.fixed_controls.codex_package}`,
   "RUN codex --version",
   "WORKDIR /workspace",

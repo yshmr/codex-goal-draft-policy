@@ -18,3 +18,4 @@ Current v2 histories:
 - [`R-008-interactive-goal-transport`](R-008-interactive-goal-transport/): failed non-interactive Goal probe, committed interactive capture revision, and clean-rerun decision.
 - [`R-009-exact-goal-objective`](R-009-exact-goal-objective/): rejected punctuation-loss activation and exact-objective rerun policy.
 - [`R-010-phase1-isolation-boundary`](R-010-phase1-isolation-boundary/): inherited paired-isolation failure, boundary diagnosis, and predeclared container revision.
+- [`R-011-container-ca-trust`](R-011-container-ca-trust/): immutable H1 infrastructure failure, root-CA diagnosis, and bounded H2 runner prerequisite revision.
