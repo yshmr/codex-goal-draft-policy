@@ -50,6 +50,7 @@ const runId = `${executedAt.toISOString().replace(/[-:TZ.]/g, "").slice(0, 14).t
 const localRoot = path.join(repoRoot, ".eval-work", "e2e", runId);
 const workDir = path.join(localRoot, "fixture");
 const isolatedHome = path.join(localRoot, "codex-home");
+const isolatedProfile = path.join(localRoot, "profile");
 fs.mkdirSync(localRoot, { recursive: true });
 fs.cpSync(fixtureSource, workDir, { recursive: true });
 fs.mkdirSync(isolatedHome, { recursive: true });
@@ -64,12 +65,12 @@ const commandArgs = [
   "-c", `model_reasoning_effort=\"${contract.controlled_variables.effort}\"`,
   "-o", outputFile, prompt
 ];
-const execution = await run(codex.command, [...codex.prefix, ...commandArgs], { cwd: workDir, env: { ...process.env, CODEX_HOME: isolatedHome }, stdio: ["ignore", "pipe", "pipe"] });
+const execution = await run(codex.command, [...codex.prefix, ...commandArgs], { cwd: workDir, env: { ...process.env, CODEX_HOME: isolatedHome, HOME: isolatedProfile, USERPROFILE: isolatedProfile }, stdio: ["ignore", "pipe", "pipe"] });
 const rawTrace = execution.stdout;
 const rawOutput = fs.existsSync(outputFile) ? fs.readFileSync(outputFile, "utf8") : "";
 fs.writeFileSync(path.join(localRoot, "trace.jsonl"), rawTrace);
 fs.writeFileSync(path.join(localRoot, "stderr.txt"), execution.stderr);
-const sanitize = (text) => [repoRoot, workDir, isolatedHome, sourceHome, os.homedir()].filter(Boolean).sort((a, b) => b.length - a.length).reduce((value, local) => value.split(local).join("<LOCAL_PATH>").split(local.replaceAll("\\", "/")).join("<LOCAL_PATH>"), text);
+const sanitize = (text) => [repoRoot, workDir, isolatedHome, isolatedProfile, sourceHome, os.homedir()].filter(Boolean).sort((a, b) => b.length - a.length).reduce((value, local) => value.split(local).join("<LOCAL_PATH>").split(local.replaceAll("\\", "/")).join("<LOCAL_PATH>"), text);
 const finalOutput = sanitize(rawOutput);
 const verificationCommand = caseDef.allowed_commands[0];
 let postVerification = { command: verificationCommand, exit_code: null, stdout: "", stderr: "" };

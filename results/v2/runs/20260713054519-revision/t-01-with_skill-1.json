@@ -1,0 +1,46 @@
+{
+  "schema_version": "2.0",
+  "run_id": "20260713054519-revision",
+  "case_id": "T-01",
+  "condition": "with_skill",
+  "repetition": 1,
+  "exit_code": 0,
+  "output_sha256": "aafc419575da97b31f7708fa8c974449e446269a78176b1232ef24e5467da156",
+  "raw_trace_sha256": "2fff8d0df73444c7c5c6c6b085f8d9d9aaef692b4a66c1423caa7d6f73e22948",
+  "raw_output_sha256": "00f8e701bee9aaf639d61bc5128f9e7c9fbf0b25171195c3a6556e69df6cf04f",
+  "usage": {
+    "input_tokens": 61936,
+    "cached_input_tokens": 32128,
+    "output_tokens": 2071,
+    "reasoning_output_tokens": 294
+  },
+  "grade": {
+    "pass": true,
+    "invocation_observed": true,
+    "failed_checks": [],
+    "major_violations": [],
+    "checks": {
+      "skill_invocation": {
+        "pass": true,
+        "detail": "Skill invocation evidence observed."
+      },
+      "repository_inspection": {
+        "pass": true,
+        "detail": "Evidence terms observed: package.json, README.md."
+      },
+      "real_command": {
+        "pass": true,
+        "detail": "Allowed commands named: npm test, npm run lint."
+      },
+      "draft_only_stop": {
+        "pass": true,
+        "detail": "activation=false; file_mutation=false"
+      },
+      "public_safety": {
+        "pass": true,
+        "detail": "No secret, local home path, or task/thread ID pattern."
+      }
+    }
+  },
+  "final_output": "**Goal Mode Suitability**\n\nGoal mode is suitable, though this is a small bounded migration. The repository defines one durable objective, explicit constraints, and concrete verification surfaces, so a `/goal` can act as a clear completion contract rather than an implementation plan.\n\n**Evidence Used**\n\n- [MIGRATION.md](<LOCAL_PATH>/MIGRATION.md): states the migration objective, compatibility requirement, and allowed verification.\n- [README.md](<LOCAL_PATH>/README.md): confirms public API compatibility is required and no extra quality targets are defined.\n- [STATUS.md](<LOCAL_PATH>/STATUS.md): says prior `npm test` success is only evidence to re-check, not a new target.\n- [package.json](<LOCAL_PATH>/package.json): names the actual verification commands: `npm test` and `npm run lint`.\n- [src/add.js](<LOCAL_PATH>/src/add.js) and [test/add.test.js](<LOCAL_PATH>/test/add.test.js): show the current exported surface and existing automated coverage.\n\n**Ready-to-Paste `/goal` Draft**\n\n```text\n/goal Migrate the API client in this repository from the legacy callback adapter to the promise adapter while preserving the public exported behavior of `add(a, b)`.\n\nOutcome:\n- The repository reflects the client migration described in `MIGRATION.md`.\n- The exported `add(a, b)` interface remains unchanged and compatible with existing callers.\n- No new dependencies are added.\n- The resulting implementation is verified with the repository’s existing checks.\n\nSources of truth and boundaries:\n- Treat `MIGRATION.md`, `README.md`, `package.json`, `src/add.js`, and `test/add.test.js` as the primary local sources of truth.\n- Preserve the public function signature and exported API shape of `add(a, b)`.\n- Do not add dependencies or invent new product requirements, quality thresholds, or migration targets beyond what the repository already defines.\n- Treat prior status in `STATUS.md` only as evidence to re-check, not as proof of completion.\n\nVerification surfaces:\n- Run `npm test`.\n- Run `npm run lint`.\n\nIteration policy:\n- Inspect the current implementation and the migration requirements before each bounded change.\n- Choose the smallest next action that closes the largest remaining migration gap.\n- After each meaningful change, rerun the relevant verification commands and update progress from actual results.\n- If the repository evidence is insufficient to perform the migration responsibly, stop and report the missing adapter details or other blocker instead of inferring a new contract.\n\nStopping conditions:\n- Stop when the migration is implemented, the `add(a, b)` API remains compatible, and both `npm test` and `npm run lint` pass.\n- Stop earlier if further progress requires missing implementation details, an unresolved product decision, or repository evidence that does not exist locally to distinguish the legacy callback adapter from the promise adapter.\n```\n\n**Design Rationale**\n\nThe draft stays narrow because the repo itself is narrow. It binds the Goal to the actual local sources and commands, avoids inventing metrics the repo does not define, and includes a real blocked condition because the current fixture does not visibly contain separate adapter implementations.\n\n**Remaining Risks Or Unresolved Ambiguities**\n\n- The repository does not currently expose obvious legacy and promise adapter files, so the migration target may be conceptual rather than represented in code.\n- Existing test coverage is minimal; passing checks may confirm syntax and one behavior path, but not broader compatibility.\n- No `AGENTS.md` or additional implementation spec was present in the repository root.\n\nThis draft has not been activated."
+}

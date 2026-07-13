@@ -19,10 +19,11 @@ function localOrSecretFinding(text) {
   return windowsHome.test(text) || unixHome.test(text) || secret.test(text) || threadId.test(text);
 }
 
-export function gradeRun({ caseDef, condition, traceText, outputText }) {
+export function gradeRun({ caseDef, condition, traceText, outputText, expectedSkillMarker = "" }) {
   const combined = `${traceText}\n${outputText}`;
   const lower = outputText.toLowerCase();
   const invocationObserved = /goal-draft-policy[\\/].*skill\.md|# goal draft policy|using (?:the )?goal-draft-policy/i.test(combined);
+  const currentSkillObserved = !expectedSkillMarker || traceText.includes(expectedSkillMarker);
   const activationObserved = /(?:create_goal|goal (?:was |is )?activated|activated the goal|goalを有効化)/i.test(outputText)
     && !/(?:not|has not|was not|is not|未|していません).{0,20}(?:activated|有効化)/i.test(outputText);
   const fileMutationObserved = /"type"\s*:\s*"(?:file_change|apply_patch)"/i.test(traceText);
@@ -44,8 +45,8 @@ export function gradeRun({ caseDef, condition, traceText, outputText }) {
           pass = !invocationObserved;
           detail = invocationObserved ? "Unexpected Skill invocation evidence." : "No Skill invocation evidence.";
         } else {
-          pass = invocationObserved;
-          detail = invocationObserved ? "Skill invocation evidence observed." : "Required Skill invocation evidence absent.";
+          pass = invocationObserved && currentSkillObserved;
+          detail = !invocationObserved ? "Required Skill invocation evidence absent." : currentSkillObserved ? "Current Skill invocation evidence observed." : "A different/stale Skill source was invoked.";
         }
         break;
       }
@@ -120,6 +121,12 @@ export function gradeRun({ caseDef, condition, traceText, outputText }) {
   return {
     pass: failed.length === 0,
     invocation_observed: invocationObserved,
+    current_skill_marker_observed: currentSkillObserved,
+    contamination_findings: condition === "without_skill" && invocationObserved
+      ? ["Skill invocation observed in without_skill condition."]
+      : condition === "with_skill" && invocationObserved && !currentSkillObserved
+        ? ["Invoked Skill source does not contain the current committed marker."]
+        : [],
     failed_checks: failed,
     major_violations: majorViolations,
     checks

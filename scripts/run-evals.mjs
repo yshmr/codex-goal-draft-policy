@@ -103,11 +103,12 @@ for (const caseDef of selected) {
       const cellRoot = path.join(localRoot, cellName);
       const workDir = path.join(cellRoot, "fixture");
       const isolatedHome = path.join(cellRoot, "codex-home");
+      const isolatedProfile = path.join(cellRoot, "profile");
       fs.mkdirSync(cellRoot, { recursive: true });
       fs.cpSync(path.join(repoRoot, "fixtures", caseDef.fixture), workDir, { recursive: true });
       copyAuth(sourceCodexHome, isolatedHome);
       if (condition === "with_skill") {
-        fs.cpSync(path.join(repoRoot, "skill", "goal-draft-policy"), path.join(isolatedHome, "skills", "goal-draft-policy"), { recursive: true });
+        fs.cpSync(path.join(repoRoot, "skill", "goal-draft-policy"), path.join(isolatedProfile, ".agents", "skills", "goal-draft-policy"), { recursive: true });
       }
       const outputFile = path.join(cellRoot, "last-message.txt");
       const args = [
@@ -117,14 +118,14 @@ for (const caseDef of selected) {
         "-o", outputFile, caseDef.prompt
       ];
       console.log(`[${cellName}] ${codexVersion} ${contract.controlled_variables.model}/${contract.controlled_variables.effort}`);
-      const execution = await runProcess(codex.command, [...codex.prefix, ...args], { cwd: workDir, env: { ...process.env, CODEX_HOME: isolatedHome }, stdio: ["ignore", "pipe", "pipe"] });
+      const execution = await runProcess(codex.command, [...codex.prefix, ...args], { cwd: workDir, env: { ...process.env, CODEX_HOME: isolatedHome, HOME: isolatedProfile, USERPROFILE: isolatedProfile }, stdio: ["ignore", "pipe", "pipe"] });
       const rawTrace = execution.stdout;
       const rawOutput = fs.existsSync(outputFile) ? fs.readFileSync(outputFile, "utf8") : "";
       fs.writeFileSync(path.join(cellRoot, "trace.jsonl"), rawTrace);
       fs.writeFileSync(path.join(cellRoot, "stderr.txt"), execution.stderr);
-      const finalOutput = sanitize(rawOutput, [repoRoot, workDir, isolatedHome, sourceCodexHome, os.homedir()]);
+      const finalOutput = sanitize(rawOutput, [repoRoot, workDir, isolatedHome, isolatedProfile, sourceCodexHome, os.homedir()]);
       const events = parseJsonlLenient(rawTrace);
-      const grade = gradeRun({ caseDef, condition, traceText: rawTrace, outputText: finalOutput });
+      const grade = gradeRun({ caseDef, condition, traceText: rawTrace, outputText: finalOutput, expectedSkillMarker: "An already-achieved target is not automatically a durable Goal." });
       const result = {
         schema_version: "2.0",
         run_id: runId,
@@ -162,6 +163,14 @@ for (const caseDef of selected) {
       });
     }
   }
+}
+
+if (manifest.results.some((entry) => {
+  const result = JSON.parse(fs.readFileSync(path.join(repoRoot, entry.result_path), "utf8"));
+  return result.grade.contamination_findings?.length > 0;
+}) && ["initial", "revision"].includes(manifest.authority)) {
+  manifest.authority = "contaminated";
+  manifest.notes += " Condition isolation contamination was detected by the grader; do not use this run for comparison claims.";
 }
 
 const manifestBytes = stableJson(manifest);
