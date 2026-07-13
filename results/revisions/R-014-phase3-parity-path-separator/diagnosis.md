@@ -1,0 +1,5 @@
+# R-014 diagnosis
+
+The representation-independent detector worked as predeclared. Candidate event ordinal 6 was a completed/exit-0 source read containing the exact derived Skill bytes; distinct later event ordinal 9 was completed/exit 0 and emitted only the fixed marker plus LF (42 UTF-8 bytes, expected hash). The action command field was not examined. Baseline source/action/final-marker/ambient-read absence also passed.
+
+The false gate was runner parity serialization, not provider or detector infrastructure. On the Windows host, `walkFiles` returned candidate inventory strings with backslash separators, while `sourceTree.files` stored slash-normalized records. The committed runner compared those arrays byte-for-byte without normalizing the inventory. Candidate derived file/tree hashes matched and baseline inventory was empty, but `only_declared_skill_directory_delta` and therefore parity were frozen false. Post-hoc normalization, manifest editing, rescoring, or another pair is prohibited.

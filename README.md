@@ -8,7 +8,7 @@
 - Codex固有の価値: explicit/implicit Skill invocation、`/goal`のthread-scoped lifecycle、draftとactivationの責任境界を直接評価します。
 - 配布物: [`skill/goal-draft-policy`](skill/goal-draft-policy/) がinstall単位です。
 - 評価物: 16 trigger case、12 draft-quality case、3 E2E case、8 synthetic fixture、`codex exec --json` runner、deterministic grader、schema/hash/safety validatorがあります。
-- 現在の結果: pure validationは31 case・8 fixtureでPASS。paired provider比較は6 runすべてcondition contaminationのため`INCONCLUSIVE`。Phase 1 isolation remediationは`REJECT hypothesis family`。Replacement Phase 2 mechanical witnessは1 hypothesis・2 normal cellsでbaseline/boundary/parity/safetyを通したがcandidate exact-action gate不成立のため`REJECT`し、paired smokeはentry不可です。実 `/goal` E2E-01はfailureとcontaminated observationを保存した後、exact approved objectiveのrevision runで達成・fresh verificationを確認。E2E-02/03、blind review、critical n=3は未実行です。
+- 現在の結果: pure validationは31 case・8 fixtureでPASSし、Phase 3 detector fixtureは17/17 PASS。paired provider比較は6 runすべてcondition contaminationのため`INCONCLUSIVE`。Phase 1とReplacement Phase 2は`REJECT`。最後のremediationであるPhase 3はcandidate structured source→actionとbaseline/boundary/hash/safetyを通したものの、committed runnerのpath-separator inventory parityがFAILしたため`REJECT`です。追加isolation remediationとpaired smokeは不可で、次はbounded closeout判断です。実 `/goal` E2E-01はrevision runで達成・fresh verificationを確認。E2E-02/03、blind review、critical n=3は未実行です。
 - authority: 既存v1 manual resultは`KEEP v1`。v2はmanifest単位でrevision・failed・contaminatedを分離し、passing rerunで過去failureを上書きしません。
 - claim境界: OpenAI公認、production保証、Codex reliability一般、統計的有意性は主張しません。
 
@@ -106,6 +106,7 @@ Skillはこのdraftをactivateしません。人間が確認した後、別のGo
 | v2 paired provider result | `INCONCLUSIVE` | 6 run / 10 cellはすべてcondition isolation contamination。valid `with_skill` / `without_skill`比較なし。 |
 | Phase 1 isolation remediation | `REJECT` | 2 hypotheses / 4 cells。baseline absence・parity・hashはPASSしたがcandidate mechanical witness不成立。Phase 2 entry不可。 |
 | Replacement Phase 2 mechanical witness | `REJECT` | 1 hypothesis / 2 normal cells。outer boundary・baseline・parity・hash・safetyはPASS、candidate exact-action gateはFAIL。paired smoke entry不可。 |
+| Final Remediation Phase 3 structured action witness | `REJECT` | 1 pair / 2 normal cells。structured source→separate exact-output actionはPASS、committed inventory path-separator parityはFAIL。isolation remediation終了、paired smoke entry不可。 |
 | `/goal` E2E-01 exec probe | `failed` | Goal lifecycle evidenceなし。通常taskをE2Eへ再解釈しない。 |
 | `/goal` E2E-01 development observation | `contaminated` | method commit前かつapproved objectiveと非同一。 |
 | `/goal` E2E-01 revision | `PASS` | exact objective activation、TUI achieved、fresh verifier exit 0、verifier不変。 |
@@ -116,6 +117,8 @@ Skillはこのdraftをactivateしません。人間が確認した後、別のGo
 Phase 1のpredeclared contract、immutable manifests、failure-driven revision、handoffは[`results/v2/isolation/phase1/summary.md`](results/v2/isolation/phase1/summary.md)にあります。candidateの文章スタイルはmechanical invocation evidenceへ再解釈していません。
 
 Replacement Phase 2のmount-free container contract、2-cell immutable authority、R-013、handoffは[`results/v2/isolation/phase2/summary.md`](results/v2/isolation/phase2/summary.md)にあります。shell-wrapper表現をpost-hocに正規化せず、marker presenceだけをPASSへ変更していません。
+
+Final Remediation Phase 3のpredeclared detector、17 pure fixtures、fresh 2-cell authority、R-014、closeout handoffは[`results/v2/isolation/phase3/summary.md`](results/v2/isolation/phase3/summary.md)にあります。structured-action gateの成功を記録しつつ、frozen parity failureをpost-hoc正規化せずoverall `REJECT`を維持しています。
 
 ## Reproduce
 
@@ -164,7 +167,7 @@ local Skillの独自価値は、activationしないこと、evaluation integrity
 - provider runはstochasticかつ費用・認証を要します。
 - E2Eはisolated synthetic fixtureに限定し、production systemを操作しません。
 - paired v2比較はclean candidate Skill discoveryを確立できず`INCONCLUSIVE`です。critical n=3とblind subjective reviewは未実行です。
-- Phase 1のcontainer hypothesis familyは`REJECT`です。Replacement Phase 2もcandidate exact-action witness不成立で`REJECT`し、paired smokeは開始していません。
+- Phase 1のcontainer hypothesis familyとReplacement Phase 2は`REJECT`です。Final Remediation Phase 3もfrozen inventory parity failureで`REJECT`し、追加isolation remediationとpaired smokeは開始できません。
 - 実測E2EはE2E-01のみです。E2E-02 blockerとE2E-03 unbiased decisionは未実証です。
 - local環境ではNode/monorepo commandとPython `compileall`はPASS。`pytest`未導入とGo toolchain不在のため、該当test commandは未実行です。
 - v1 manual observationは現在のautomated harnessで再解釈しません。

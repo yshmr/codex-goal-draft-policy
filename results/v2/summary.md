@@ -10,6 +10,7 @@ Recorded: 2026-07-13
 | Paired `with_skill` / `without_skill` | INCONCLUSIVE | Six committed runs are `contaminated`; no valid paired comparison |
 | Phase 1 isolation remediation | REJECT hypothesis family | Two hypotheses / four cells; candidate mechanical witness not established |
 | Replacement Phase 2 mechanical witness | REJECT | One hypothesis / two normal cells; exact-action witness gate failed |
+| Final Remediation Phase 3 structured action witness | REJECT | One pair / two normal cells; structured action passed, frozen inventory parity failed |
 | Blind subjective review | UNEXECUTED | No scores claimed |
 | Critical n=3 provider cases | UNEXECUTED | Condition isolation failed before full matrix |
 | Real `/goal` E2E-01 | PASS on revision | [`revision` manifest](e2e/20260713062403-e2e-01-interactive-revision/manifest.json) |
@@ -28,6 +29,14 @@ H2 passed baseline absence, condition parity, and published manifest/result/hash
 One fresh post-contract candidate/baseline pair ran under an ephemeral outer Docker container with zero host mounts and the inner Codex sandbox disabled. Both cells exited 0 with normal JSONL. Baseline absence, outer-boundary, parity, artifact/hash, public-safety, and freshness gates passed.
 
 The candidate read the derived Skill and later produced the fixed marker, but the shell wrapper escaped the command format string, so the structured command field did not contain the predeclared exact command substring. Because marker presence also occurred in the source-read output, it was not promoted by itself. The frozen candidate witness gate is false, the decision is `REJECT`, and no retry, normalization change, replacement, or paired smoke was run. See [`isolation/phase2/summary.md`](isolation/phase2/summary.md).
+
+## Final Remediation Phase 3 structured action witness
+
+The representation-independent detector was committed after its contract and before provider execution. All 17 synthetic detector tests passed, including two positive wrapper variants and the predeclared source-only, final-only, wrong-order, nonzero, incomplete, extra-byte, missing-source, and contaminated-baseline negatives.
+
+One fresh candidate/baseline pair then ran in fixed order under the same mount-free outer boundary. Both cells were normal/exit 0. Candidate source ordinal 6 preceded a distinct action ordinal 9 that was completed/exit 0 and emitted exactly the fixed 42-byte marker+LF output with the expected hash; the action command field was not examined. Baseline absence, boundary, artifact/hash, public safety, and freshness passed.
+
+Pair parity failed because the committed runner compared Windows backslash inventory strings with slash-normalized source records. Although the candidate file/tree hashes and baseline empty inventory were correct, the frozen parity gate is false. The normal pair is therefore `REJECT`; it is not normalized, rescored, or retried. Isolation remediation is closed, valid paired smoke remains ineligible, and only bounded evidence-program closeout selection remains. See [`isolation/phase3/summary.md`](isolation/phase3/summary.md).
 
 ## Paired evaluation outcome
 

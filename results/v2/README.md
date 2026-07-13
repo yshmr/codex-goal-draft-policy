@@ -6,6 +6,7 @@ This directory contains committed, sanitized v2 evaluation results only.
 - `e2e/<run-id>/manifest.json`: separately approved real `/goal` E2E authority.
 - `isolation/phase1/<run-id>/manifest.json`: bounded candidate-isolation probe authority.
 - `isolation/phase2/<run-id>/manifest.json`: bounded mechanical-action witness authority.
+- `isolation/phase3/<run-id>/manifest.json`: final structured-action witness authority.
 - `revisions/<finding>/`: diagnosis, policy change, commit linkage, clean rerun, and adopt/reject/inconclusive decision.
 
 Raw JSONL traces, stderr, isolated auth, work copies, task/session identifiers, and local absolute paths remain under ignored `.eval-work/`. Manifests retain their SHA-256 hashes.
@@ -15,6 +16,7 @@ Current snapshot:
 - six paired run manifests are `contaminated`; the paired program decision is `INCONCLUSIVE`;
 - Phase 1 isolation remediation is `REJECT hypothesis family` after two hypotheses/four cells; Phase 2 is not eligible;
 - Replacement Phase 2 mechanical witness remediation is `REJECT` after one hypothesis/two normal cells; valid paired smoke remains ineligible;
+- Final Remediation Phase 3 is `REJECT` after one normal pair: the structured source→action and baseline gates passed, but frozen path-separator inventory parity failed; isolation remediation is closed and paired smoke remains ineligible;
 - E2E-01 retains one `failed` probe, one `contaminated` development observation, and one valid `revision` result;
 - E2E-02/E2E-03, critical n=3, and blind review are unexecuted.
 

@@ -21,3 +21,4 @@ Current v2 histories:
 - [`R-011-container-ca-trust`](R-011-container-ca-trust/): immutable H1 infrastructure failure, root-CA diagnosis, and bounded H2 runner prerequisite revision.
 - [`R-012-candidate-witness-unavailable`](R-012-candidate-witness-unavailable/): normal H2 pair, unavailable candidate mechanical witness, and maximum-trial rejection.
 - [`R-013-phase2-exact-action-mismatch`](R-013-phase2-exact-action-mismatch/): normal Replacement Phase 2 pair, shell-wrapper exact-action mismatch, and no-retry witness-method rejection.
+- [`R-014-phase3-parity-path-separator`](R-014-phase3-parity-path-separator/): normal Final Remediation Phase 3 pair, successful structured action detection, frozen path-separator parity failure, and final no-retry rejection.

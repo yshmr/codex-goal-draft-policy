@@ -62,6 +62,17 @@ This bounded replacement tests only the witness method; it does not start the pr
 
 Replacement Phase 2 decision: `REJECT`. No retry or passing replacement was created, and valid paired smoke remains ineligible.
 
+## Final Remediation Phase 3 structured action witness authority
+
+This is the last isolation-witness remediation. It preserves every earlier label and evaluates one fresh pair with a detector frozen through pure fixtures before provider execution.
+
+- Predeclared design/contract: [`../evals/contracts/phase3-structured-action-witness.json`](../evals/contracts/phase3-structured-action-witness.json)
+- One immutable pair: [`20260713073139-h1-structured-source-then-action`](v2/isolation/phase3/20260713073139-h1-structured-source-then-action/manifest.json): candidate and baseline both normal/exit 0; candidate structured source→separate exact-output action, baseline, boundary, hash, safety, and freshness passed; pair parity failed on frozen Windows backslash versus normalized slash inventory serialization.
+- Final summary: [`v2/isolation/phase3/summary.md`](v2/isolation/phase3/summary.md)
+- Revision: [`R-014`](revisions/R-014-phase3-parity-path-separator/)
+
+Final Remediation Phase 3 decision: `REJECT`. No post-hoc normalization or retry was performed. Isolation remediation is closed, valid paired smoke remains ineligible, and the next candidate is bounded evidence-program closeout selection rather than another provider experiment.
+
 ## E2E authority
 
 E2E results live separately under `results/v2/e2e/`:
