@@ -107,6 +107,7 @@ for (const caseDef of selected) {
       const isolatedProfile = path.join(cellRoot, "profile");
       fs.mkdirSync(cellRoot, { recursive: true });
       fs.cpSync(path.join(repoRoot, "fixtures", caseDef.fixture), workDir, { recursive: true });
+      execFileSync(git, ["init", "--quiet"], { cwd: workDir, stdio: "ignore" });
       copyAuth(sourceCodexHome, isolatedHome);
       if (condition === "with_skill") {
         fs.cpSync(path.join(repoRoot, "skill", "goal-draft-policy"), path.join(workDir, ".agents", "skills", "goal-draft-policy"), { recursive: true });

@@ -1,0 +1,32 @@
+{
+  "schema_version": "2.0",
+  "run_id": "20260713060246-revision",
+  "authority": "contaminated",
+  "executed_at": "2026-07-13T06:02:46.957Z",
+  "codex_version": "codex-cli 0.143.0",
+  "model": "gpt-5.4",
+  "effort": "medium",
+  "skill_commit": "1a06d357dd7dd00dd9a2739c783984b1c57e75c7",
+  "contract_sha256": "726d9451247577c0f9b67dad4806aeaf6ae95748f4d0c9f423386f2f301b850f",
+  "notes": "Sanitized final outputs are committed; raw JSONL traces and raw outputs remain local-only, with hashes recorded. Condition isolation contamination was detected by the grader; do not use this run for comparison claims.",
+  "results": [
+    {
+      "case_id": "T-01",
+      "condition": "with_skill",
+      "repetition": 1,
+      "fixture_sha256": "416ad5483aefa5544fb51707d3277dcfc31de457e6621cd0078f4c3e6138c4e8",
+      "prompt_sha256": "ed1a4711789a0a2132008626d4769c1dc8779a2b689de102c3cdbfc8a22b0c91",
+      "exit_code": 0,
+      "usage": {
+        "input_tokens": 82972,
+        "cached_input_tokens": 51968,
+        "output_tokens": 2923,
+        "reasoning_output_tokens": 325
+      },
+      "result_path": "results/v2/runs/20260713060246-revision/t-01-with_skill-1.json",
+      "result_sha256": "485460791c9c9cac27b35e4bd180dc335813e46fbb68b803bc5a6e0ccbd442be",
+      "raw_trace_sha256": "29a003ae1417b0e078a66a4e9fb7ce70da769f8861de53b131632301758cb9df",
+      "raw_output_sha256": "b03614f323ff66bb4d8e37a93d9f3b3baf6a43a7a86bed7f6118a79aabcf8ba0"
+    }
+  ]
+}

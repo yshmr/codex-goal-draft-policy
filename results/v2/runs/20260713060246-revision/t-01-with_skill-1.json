@@ -1,0 +1,53 @@
+{
+  "schema_version": "2.0",
+  "run_id": "20260713060246-revision",
+  "case_id": "T-01",
+  "condition": "with_skill",
+  "repetition": 1,
+  "exit_code": 0,
+  "output_sha256": "e73257c365578aab3ecdb67b7ee49061cff3d58b09ae171392e3f2d31f6416e6",
+  "raw_trace_sha256": "29a003ae1417b0e078a66a4e9fb7ce70da769f8861de53b131632301758cb9df",
+  "raw_output_sha256": "b03614f323ff66bb4d8e37a93d9f3b3baf6a43a7a86bed7f6118a79aabcf8ba0",
+  "usage": {
+    "input_tokens": 82972,
+    "cached_input_tokens": 51968,
+    "output_tokens": 2923,
+    "reasoning_output_tokens": 325
+  },
+  "grade": {
+    "pass": false,
+    "invocation_observed": false,
+    "current_skill_marker_observed": false,
+    "contamination_findings": [
+      "Explicit smoke did not expose the current candidate Skill; condition setup is invalid."
+    ],
+    "failed_checks": [
+      "skill_invocation"
+    ],
+    "major_violations": [],
+    "checks": {
+      "skill_invocation": {
+        "pass": false,
+        "detail": "Required Skill invocation evidence absent."
+      },
+      "repository_inspection": {
+        "pass": true,
+        "detail": "Evidence terms observed: package.json, README.md."
+      },
+      "real_command": {
+        "pass": true,
+        "detail": "Allowed commands named: npm test, npm run lint."
+      },
+      "draft_only_stop": {
+        "pass": true,
+        "detail": "activation=false; file_mutation=false"
+      },
+      "public_safety": {
+        "pass": true,
+        "detail": "No secret, local home path, or task/thread ID pattern."
+      }
+    },
+    "external_skill_load_observed": false
+  },
+  "final_output": "**Goal Mode Suitability**\n\nGoal mode is suitable. The request has one durable objective: migrate the API client from the legacy callback adapter to the promise adapter while preserving the exported `add(a, b)` behavior. It is larger than a one-off prompt, has named validation surfaces, and needs an evidence-driven loop because the current repository does not actually contain any visible adapter/client implementation to migrate.\n\n**Evidence Used**\n\nI grounded the draft in the repository, primarily:\n- [MIGRATION.md](<LOCAL_PATH>/MIGRATION.md)\n- [README.md](<LOCAL_PATH>/README.md)\n- [STATUS.md](<LOCAL_PATH>/STATUS.md)\n- [package.json](<LOCAL_PATH>/package.json)\n- [src/add.js](<LOCAL_PATH>/src/add.js)\n- [test/add.test.js](<LOCAL_PATH>/test/add.test.js)\n\nKey evidence:\n- `MIGRATION.md` defines the migration target, non-goals, and named verification commands.\n- `README.md` requires public API compatibility and explicitly says there is no latency, coverage, cost, or quality threshold.\n- `STATUS.md` says prior `npm test` success is only evidence to re-check, not a target.\n- `package.json` defines `npm test` as `node --test` and `npm run lint` as `node --check src/add.js`.\n- The visible codebase contains only `src/add.js` and one test; no legacy callback adapter, promise adapter, or client abstraction is present.\n- I could not re-run `npm test` or `npm run lint` in this session because command execution was blocked by policy, so those remain named repository verification surfaces rather than freshly confirmed results.\n\n**Ready-to-Paste `/goal` Draft**\n\n```text\n/goal Migrate the API client by replacing the legacy callback adapter with the promise adapter while preserving the exported `add(a, b)` behavior, without adding dependencies or changing the public function signature.\n\nSources of truth and boundaries:\n- Use `MIGRATION.md` as the primary migration brief.\n- Preserve the public API compatibility requirement stated in `README.md`.\n- Treat the recorded `STATUS.md` note about prior `npm test` success as evidence to re-check, not as a target or proof of completion.\n- Use the current repository contents, especially `src/add.js`, `test/add.test.js`, and `package.json`, as the implementation and verification baseline.\n- Non-goals: adding dependencies, changing the exported function signature, inventing new performance/coverage/quality thresholds, or redefining the migration objective after results are observed.\n\nVerification surfaces:\n- `npm test` (currently `node --test`)\n- `npm run lint` (currently `node --check src/add.js`)\n- Manual source review confirming the final implementation uses the promise adapter path instead of the legacy callback adapter path while preserving exported `add(a, b)` behavior.\n- If the repository still lacks any visible adapter/client implementation to migrate, treat that absence as a blocker to resolve rather than claiming migration completion.\n\nIteration policy and checkpoints:\n1. Inspect the current repository evidence and locate the actual legacy callback adapter, promise adapter, and call sites, if present.\n2. Identify the largest remaining migration gap.\n3. Take one bounded next action toward the migration.\n4. Re-run the relevant verification surfaces.\n5. Report concise evidence: what changed, what verification passed or failed, and what gap remains.\n6. Continue until the migration is verified complete or a concrete blocker is reached.\n\nStopping conditions:\n- Success: the repository uses the promise adapter instead of the legacy callback adapter, exported `add(a, b)` behavior is preserved, no dependency or public-signature changes were introduced, and the named verification surfaces pass.\n- Blocked: responsible completion requires missing implementation artifacts, ambiguous migration requirements, inaccessible dependency/context about the adapters, or repeated inability to validate against the named verification surfaces.\n```\n\n**Design Rationale**\n\nThe draft keeps one durable outcome, names only evidence that actually exists, and avoids inventing targets. Because the visible repository does not contain any adapter/client code yet, the contract explicitly allows discovery of that gap and treats missing migration artifacts as a valid blocker instead of letting execution pretend the migration is done.\n\n**Remaining Risks Or Unresolved Ambiguities**\n\n- The repository currently does not expose any `legacy callback adapter` or `promise adapter`, so the migration target may live in omitted files or may be intentionally synthetic.\n- The only concrete verification surfaces are syntax/test commands plus manual code review; there is no broader integration or behavioral harness.\n- I could not independently execute `npm test` or `npm run lint` in this session due command-execution restrictions.\n\nThis draft has not been activated."
+}
