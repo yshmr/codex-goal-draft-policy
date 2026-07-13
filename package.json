@@ -11,6 +11,7 @@
     "fixtures:update": "node scripts/validate.mjs --update-fixtures",
     "eval": "node scripts/run-evals.mjs",
     "eval:isolation": "node scripts/run-isolation-probes.mjs",
+    "eval:phase2-witness": "node scripts/run-phase2-mechanical-witness.mjs",
     "e2e": "node scripts/run-goal-e2e.mjs",
     "e2e:capture": "node scripts/capture-interactive-e2e.mjs",
     "blind-review": "node scripts/build-blind-review.mjs"

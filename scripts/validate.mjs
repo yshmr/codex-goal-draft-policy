@@ -165,6 +165,80 @@ function validatePhase1Isolation() {
   }
 }
 
+function validatePhase2MechanicalWitness() {
+  const contractFile = path.join(repoRoot, "evals", "contracts", "phase2-mechanical-witness.json");
+  const contract = readJson(contractFile);
+  check(contract.authority === "predeclared-before-phase2-provider-execution", "Phase 2 contract authority is not predeclared");
+  check(contract.fixed_controls?.codex_version === "0.143.0", "Phase 2 Codex version changed");
+  check(contract.fixed_controls?.condition_order?.join(",") === "candidate,baseline", "Phase 2 condition order changed");
+  check(contract.maximum_trials?.hypotheses === 1 && contract.maximum_trials?.total_cells === 2, "Phase 2 exceeds one hypothesis/two cells");
+  check(contract.maximum_trials?.repetitions_per_cell === 1, "Phase 2 repetition bound changed");
+  for (const key of ["retry", "reorder", "parameter_tuning", "additional_hypothesis", "replacement"]) {
+    check(contract.maximum_trials?.[key] === false, `Phase 2 ${key} prohibition changed`);
+  }
+  check(contract.fixed_controls?.container_runtime?.mounts?.length === 0, "Phase 2 contract permits a mount");
+  check(contract.fixed_controls?.runtime_image_id === "sha256:480f80aca635842cc14e032a63cd9ce0bbfebf2751dfa7e470d6840706efa813", "Phase 2 runtime image changed");
+  check(contract.invocation_policy?.mode === "implicit only", "Phase 2 invocation mode changed");
+  check(!contract.fixed_controls?.prompt?.includes("goal-draft-policy") && !contract.fixed_controls?.prompt?.includes(contract.invocation_policy?.marker), "Phase 2 baseline prompt leaks the candidate or marker");
+
+  const source = path.join(repoRoot, "skill", "goal-draft-policy");
+  const sourceTree = treeDigest(source);
+  const baseSkill = fs.readFileSync(path.join(source, "SKILL.md"));
+  const derivedSkill = Buffer.concat([baseSkill, Buffer.from(contract.candidate_test_copy.exact_append_utf8)]);
+  check(sourceTree.sha256 === contract.candidate_test_copy.source_tree_sha256, "Phase 2 source candidate tree hash changed");
+  check(sha256(baseSkill) === contract.candidate_test_copy.base_skill_file_sha256, "Phase 2 base SKILL.md hash changed");
+  check(sha256(derivedSkill) === contract.candidate_test_copy.derived_skill_file_sha256, "Phase 2 derived SKILL.md hash mismatch");
+  const derivedRecords = sourceTree.files.map((record) => record.path === "SKILL.md"
+    ? { ...record, bytes: derivedSkill.length, sha256: sha256(derivedSkill) }
+    : record);
+  const derivedPayload = derivedRecords.map((record) => `${record.path}\0${record.bytes}\0${record.sha256}\n`).join("");
+  check(sha256(derivedPayload) === contract.candidate_test_copy.derived_tree_sha256, "Phase 2 derived candidate tree hash mismatch");
+
+  const root = path.join(repoRoot, "results", "v2", "isolation", "phase2");
+  if (!fs.existsSync(root)) return;
+  const manifests = walkFiles(root).filter((name) => name.endsWith("manifest.json"));
+  check(manifests.length <= 1, "Phase 2 published more than one hypothesis manifest");
+  for (const file of manifests) {
+    const manifestFile = path.join(root, file);
+    const manifestBytes = fs.readFileSync(manifestFile);
+    const manifest = JSON.parse(manifestBytes.toString("utf8"));
+    const manifestSidecar = manifestFile.replace(/\.json$/, ".sha256");
+    check(fs.existsSync(manifestSidecar), `${relative(manifestFile)}: Phase 2 manifest sidecar missing`);
+    if (fs.existsSync(manifestSidecar)) check(fs.readFileSync(manifestSidecar, "utf8").split(/\s+/)[0] === sha256(manifestBytes), `${relative(manifestFile)}: Phase 2 manifest hash mismatch`);
+    check(manifest.schema_version === "1.0-phase2-mechanical-witness-manifest", `${relative(manifestFile)}: Phase 2 manifest schema version`);
+    check(["ADOPT witness method", "REJECT", "INCONCLUSIVE"].includes(manifest.decision), `${relative(manifestFile)}: invalid Phase 2 decision`);
+    check(manifest.results?.map((item) => item.condition).join(",") === "candidate,baseline", `${relative(manifestFile)}: Phase 2 result order changed`);
+    check(manifest.results?.length === 2 && manifest.results.every((item) => item.repetition === 1), `${relative(manifestFile)}: Phase 2 cell/repetition bound changed`);
+    check(manifest.contract_commit !== manifest.execution_commit, `${relative(manifestFile)}: Phase 2 pair is not post-contract`);
+    check(manifest.outer_boundary?.mounts?.length === 0 && manifest.outer_boundary?.docker_socket_mounted === false, `${relative(manifestFile)}: Phase 2 outer boundary invalid`);
+    check(!walkFiles(path.dirname(manifestFile)).some((name) => /(?:trace\.jsonl|stderr\.txt|auth\.json|last-message\.txt)$/i.test(name)), `${relative(manifestFile)}: local-only artifact was published`);
+    for (const entry of manifest.results || []) {
+      const resultFile = path.join(repoRoot, entry.result_path || "");
+      const sidecar = path.join(repoRoot, entry.result_sidecar_path || "");
+      check(fs.existsSync(resultFile), `${relative(manifestFile)}: missing Phase 2 result ${entry.result_path}`);
+      check(fs.existsSync(sidecar), `${relative(manifestFile)}: missing Phase 2 result sidecar ${entry.result_sidecar_path}`);
+      if (!fs.existsSync(resultFile)) continue;
+      const bytes = fs.readFileSync(resultFile);
+      check(sha256(bytes) === entry.result_sha256, `${entry.result_path}: Phase 2 result hash mismatch`);
+      if (fs.existsSync(sidecar)) check(fs.readFileSync(sidecar, "utf8").split(/\s+/)[0] === entry.result_sha256, `${entry.result_sidecar_path}: Phase 2 sidecar hash mismatch`);
+      const result = JSON.parse(bytes.toString("utf8"));
+      check(result.schema_version === "1.0-phase2-mechanical-witness-result", `${entry.result_path}: Phase 2 result schema version`);
+      check(result.run_id === manifest.run_id && result.hypothesis_id === manifest.hypothesis_id && result.condition === entry.condition, `${entry.result_path}: Phase 2 identity mismatch`);
+      check(sha256(result.sanitized_output || "") === result.sanitized_output_sha256, `${entry.result_path}: Phase 2 sanitized output hash mismatch`);
+      check(/^[a-f0-9]{64}$/.test(result.raw_trace_sha256 || "") && /^[a-f0-9]{64}$/.test(result.raw_output_sha256 || ""), `${entry.result_path}: Phase 2 raw hash missing`);
+      if (entry.condition === "baseline") {
+        check(result.skill_inventory?.length === 0, `${entry.result_path}: baseline Skill inventory is not empty`);
+        check(!result.marker_in_trace && !result.marker_in_final_output, `${entry.result_path}: baseline marker contamination`);
+        check(!result.candidate_source_or_action_in_trace && !result.candidate_source_or_action_in_final_output && !result.ambient_skill_read_observed, `${entry.result_path}: baseline candidate/ambient contamination`);
+      }
+    }
+    const allGates = Object.values(manifest.gates || {}).every(Boolean);
+    check((manifest.decision === "ADOPT witness method") === allGates, `${relative(manifestFile)}: Phase 2 ADOPT/gate mismatch`);
+    if (manifest.decision === "REJECT") check(manifest.normal_pair === true && !allGates, `${relative(manifestFile)}: Phase 2 REJECT gate mismatch`);
+    if (manifest.decision === "INCONCLUSIVE") check(manifest.normal_pair === false, `${relative(manifestFile)}: Phase 2 INCONCLUSIVE gate mismatch`);
+  }
+}
+
 function validateMarkdownLinks() {
   const files = walkFiles(repoRoot, { exclude: [".git", ".eval-work", "node_modules"] }).filter((file) => file.endsWith(".md"));
   for (const file of files) {
@@ -275,6 +349,7 @@ validateMarkdownLinks();
 validatePublicSafety();
 validatePublishedResults();
 validatePhase1Isolation();
+validatePhase2MechanicalWitness();
 validateManualReviews();
 validateGraderRegressions();
 const launcher = resolveCodexInvocation();
