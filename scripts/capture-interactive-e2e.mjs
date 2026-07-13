@@ -73,13 +73,16 @@ const events = rawTrace.split(/\r?\n/).filter(Boolean).map((line, index) => {
   try { return JSON.parse(line); }
   catch (error) { throw new Error(`Invalid session JSONL line ${index + 1}: ${error.message}`); }
 });
-const activation = events.find((event) =>
+const activeGoal = events.find((event) =>
   event.type === "event_msg" &&
   event.payload?.type === "thread_goal_updated" &&
-  event.payload?.goal?.status === "active" &&
-  event.payload?.goal?.objective === approvedObjective
+  event.payload?.goal?.status === "active"
 );
-if (!activation) throw new Error("No exact approved active Goal event found in the session trace.");
+if (!activeGoal) throw new Error("No active Goal event found in the session trace.");
+if (activeGoal.payload.goal.objective !== approvedObjective) {
+  throw new Error(`Activated Goal objective mismatch: expected sha256=${sha256(approvedObjective)}, observed sha256=${sha256(activeGoal.payload.goal.objective)}.`);
+}
+const activation = activeGoal;
 const completion = [...events].reverse().find((event) => event.type === "event_msg" && event.payload?.type === "task_complete");
 if (!completion?.payload?.last_agent_message) throw new Error("No task-complete final output found in the session trace.");
 const rawOutput = completion.payload.last_agent_message;

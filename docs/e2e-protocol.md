@@ -20,7 +20,7 @@ node scripts/run-goal-e2e.mjs --id E2E-01 --approval-sha <reviewed-goal-sha256> 
 
 In tested Codex CLI 0.143.0 behavior, `codex exec --json` did not expose the interactive `/goal` lifecycle. Therefore, a failed probe is retained as a failed transport observation and is never relabeled as real Goal E2E.
 
-For a real E2E, start an interactive TUI in a fresh isolated fixture, enter the exact approved objective through `/goal`, wait for the rendered terminal state, exit the TUI, and capture the local session JSONL:
+For a real E2E, start an interactive TUI in a fresh isolated fixture, enter the exact approved objective through `/goal`, wait for the rendered terminal state, exit the TUI, and capture the local session JSONL. "Exact" includes Markdown punctuation such as backticks; copy the objective body byte-for-byte rather than retyping a semantically equivalent sentence.
 
 ```bash
 npm run e2e:capture -- \
