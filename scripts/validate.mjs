@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { allCases, readJson, repoRoot, resolveCodexInvocation, sha256, stableJson, treeDigest, walkFiles } from "./lib.mjs";
+import { gradeRun } from "./grader.mjs";
 
 const updateFixtures = process.argv.includes("--update-fixtures");
 const errors = [];
@@ -154,6 +155,18 @@ function validatePublishedResults() {
   }
 }
 
+function validateGraderRegressions() {
+  const pathListingOnly = gradeRun({
+    caseDef: { expected_trigger: "explicit_trigger", checks: ["skill_invocation"], prompt: "$goal-draft-policy draft", allowed_commands: [], evidence_terms: [] },
+    condition: "with_skill",
+    traceText: '{"type":"command_execution","command":"Get-ChildItem .agents/skills/goal-draft-policy/SKILL.md"}',
+    outputText: "A draft response without a Skill declaration.",
+    expectedSkillMarker: "CURRENT-SKILL-MARKER"
+  });
+  check(pathListingOnly.invocation_observed === false, "grader regression: a Skill path listing must not count as invocation");
+  check(pathListingOnly.contamination_findings.length === 1, "grader regression: explicit candidate absence must be condition contamination");
+}
+
 validateSkill();
 const cases = validateCases();
 validateFixtures(cases);
@@ -161,6 +174,7 @@ validateSchemasAndContract();
 validateMarkdownLinks();
 validatePublicSafety();
 validatePublishedResults();
+validateGraderRegressions();
 const launcher = resolveCodexInvocation();
 if (process.platform === "win32" && launcher.strategy === "node-entrypoint") {
   check(fs.existsSync(launcher.command) && fs.existsSync(launcher.prefix[0]), "Windows Codex node entrypoint resolution failed");

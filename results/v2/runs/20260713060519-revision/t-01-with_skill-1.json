@@ -1,0 +1,53 @@
+{
+  "schema_version": "2.0",
+  "run_id": "20260713060519-revision",
+  "case_id": "T-01",
+  "condition": "with_skill",
+  "repetition": 1,
+  "exit_code": 0,
+  "output_sha256": "f0ba9e9392d0588ad660ff560e2ad25269ac6cb6a565a29897c02eec800a5f13",
+  "raw_trace_sha256": "0fd93ddc2f83f0d84286b67bc0029481b24a67f8813cc9e7c75136344b98c5ad",
+  "raw_output_sha256": "f0ba9e9392d0588ad660ff560e2ad25269ac6cb6a565a29897c02eec800a5f13",
+  "usage": {
+    "input_tokens": 83058,
+    "cached_input_tokens": 48384,
+    "output_tokens": 2240,
+    "reasoning_output_tokens": 271
+  },
+  "grade": {
+    "pass": false,
+    "invocation_observed": true,
+    "current_skill_marker_observed": false,
+    "contamination_findings": [
+      "Invoked Skill source does not contain the current committed marker."
+    ],
+    "failed_checks": [
+      "skill_invocation"
+    ],
+    "major_violations": [],
+    "checks": {
+      "skill_invocation": {
+        "pass": false,
+        "detail": "A different/stale Skill source was invoked."
+      },
+      "repository_inspection": {
+        "pass": true,
+        "detail": "Evidence terms observed: package.json, README.md."
+      },
+      "real_command": {
+        "pass": true,
+        "detail": "Allowed commands named: npm test, npm run lint."
+      },
+      "draft_only_stop": {
+        "pass": true,
+        "detail": "activation=false; file_mutation=false"
+      },
+      "public_safety": {
+        "pass": true,
+        "detail": "No secret, local home path, or task/thread ID pattern."
+      }
+    },
+    "external_skill_load_observed": false
+  },
+  "final_output": "**Goal Mode Suitability**\n\nGoal mode is suitable. The request has one durable outcome: complete the API client migration so the repository ends in a verified state with the promise adapter in place while preserving the exported `add(a, b)` API. It is larger than a one-shot prompt, has named verification surfaces, and has a clear stopping condition.\n\n**Evidence Used To Draft The Goal**\n\n- `MIGRATION.md`: migrate from the legacy callback adapter to the promise adapter; preserve exported `add(a, b)` behavior; do not add dependencies or change the public function signature; verify with `npm test` and `npm run lint`.\n- `README.md`: public API compatibility is required during the migration.\n- `package.json`: `test` is `node --test`; `lint` is `node --check src/add.js`.\n- `src/add.js`: current public surface is `export function add(a, b)`.\n- `test/add.test.js`: current automated check asserts `add(2, 3) === 5`.\n- `STATUS.md`: prior local evidence says `npm test` passed; it is explicitly only re-check evidence, not a new target.\n- I could not rerun `npm test` or `npm run lint` in this session because command execution was blocked by policy, so current pass/fail state is unverified here.\n\n**Ready-to-Paste `/goal` Draft**\n\n```text\n/goal Complete the API client migration described in `MIGRATION.md` so the repository uses the promise adapter instead of the legacy callback adapter while preserving the exported `add(a, b)` behavior and public API compatibility. Use `MIGRATION.md`, `README.md`, `package.json`, `src/add.js`, and `test/add.test.js` as the source-of-truth surfaces. Do not add dependencies, do not change the public function signature, and do not broaden scope beyond the migration and any tests or implementation changes required to verify it. Work in bounded iterations: inspect current migration-related code and tests, identify the largest remaining gap, make one focused change, rerun the relevant verification, and report progress from evidence. Verification surfaces are the repository commands `npm test` and `npm run lint` as defined in `package.json` (`node --test` and `node --check src/add.js`), plus review of the exported behavior in `src/add.js`. Stop when the migration is implemented and those verification surfaces pass, or stop blocked if responsible continuation requires a missing requirement, unavailable adapter code or dependency surface, or repeated verification barriers that prevent confirming the migration without changing the contract.\n```\n\n**Short Design Rationale**\n\nThe draft stays tightly bounded to the repository’s stated migration objective and preserves the current public API as the durable outcome. It uses only the verification surfaces already named by the repo and avoids inventing thresholds, extra deliverables, or a preferred internal implementation beyond the documented callback-to-promise migration.\n\n**Remaining Risks Or Unresolved Ambiguities**\n\n- The repository does not expose any visible callback-adapter or promise-adapter implementation surface, so the migration target may exist outside the currently indexed files or be intentionally synthetic.\n- Automated verification is thin: the test suite covers one `add()` case and `lint` is only a syntax check for `src/add.js`.\n- I could not independently rerun `npm test` or `npm run lint` in this session, so the draft relies on documented commands and recorded status rather than fresh execution evidence.\n\nThis draft has not been activated."
+}

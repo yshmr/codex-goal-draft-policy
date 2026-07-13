@@ -1,7 +1,7 @@
 # R-006 decision
 
-Status: pending one final explicit with-Skill smoke.
+Status: `REJECT` the Git-root discovery hypothesis for clean candidate invocation in this environment; provider comparison is `INCONCLUSIVE`.
 
-- Adopt if the current candidate is invoked without ambient load.
-- Reject the hypothesis if the candidate remains unavailable.
-- If rejected, classify provider-backed with/without comparison as unexecutable/inconclusive under current clean-isolation constraints.
+- Evidence: run `20260713060519-revision` initialized a Git repository and exposed `.agents/skills`, but Codex did not read the candidate `SKILL.md`; it only found a reference file during normal repository inspection.
+- Ambient real-profile Skill remained disabled and was not loaded.
+- Decision: do not mutate or replace the user's installed global Skill merely to force a passing comparison. The paired provider comparison remains unexecuted/inconclusive under current clean-isolation constraints.

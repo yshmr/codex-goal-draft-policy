@@ -22,7 +22,7 @@ function localOrSecretFinding(text) {
 export function gradeRun({ caseDef, condition, traceText, outputText, expectedSkillMarker = "" }) {
   const combined = `${traceText}\n${outputText}`;
   const lower = outputText.toLowerCase();
-  const invocationObserved = /goal-draft-policy[\\/].*skill\.md|# goal draft policy|using (?:the )?goal-draft-policy/i.test(combined);
+  const invocationObserved = /# goal draft policy|using (?:the )?goal-draft-policy/i.test(combined);
   const currentSkillObserved = !expectedSkillMarker || traceText.includes(expectedSkillMarker);
   const activationObserved = /(?:create_goal|goal (?:was |is )?activated|activated the goal|goalを有効化)/i.test(outputText)
     && !/(?:not|has not|was not|is not|未|していません).{0,20}(?:activated|有効化)/i.test(outputText);
