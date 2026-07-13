@@ -2,6 +2,8 @@
 
 Recorded: 2026-07-13
 
+Final program status: **`CLOSED — IMPLEMENTATION RETAINED; COMPARATIVE CLAIM WITHHELD`**. The canonical publication, claim, preservation, and archive boundary is [`closeout.md`](closeout.md). This summary preserves the underlying observations; it does not promote any paired result.
+
 ## Decision snapshot
 
 | Program area | Result | Authority |
@@ -36,7 +38,7 @@ The representation-independent detector was committed after its contract and bef
 
 One fresh candidate/baseline pair then ran in fixed order under the same mount-free outer boundary. Both cells were normal/exit 0. Candidate source ordinal 6 preceded a distinct action ordinal 9 that was completed/exit 0 and emitted exactly the fixed 42-byte marker+LF output with the expected hash; the action command field was not examined. Baseline absence, boundary, artifact/hash, public safety, and freshness passed.
 
-Pair parity failed because the committed runner compared Windows backslash inventory strings with slash-normalized source records. Although the candidate file/tree hashes and baseline empty inventory were correct, the frozen parity gate is false. The normal pair is therefore `REJECT`; it is not normalized, rescored, or retried. Isolation remediation is closed, valid paired smoke remains ineligible, and only bounded evidence-program closeout selection remains. See [`isolation/phase3/summary.md`](isolation/phase3/summary.md).
+Pair parity failed because the committed runner compared Windows backslash inventory strings with slash-normalized source records. Although the candidate file/tree hashes and baseline empty inventory were correct, the frozen parity gate is false. The normal pair is therefore `REJECT`; it is not normalized, rescored, or retried. Isolation remediation is closed, valid paired smoke remains ineligible, and the evidence program is archived under the [`final closeout`](closeout.md). See [`isolation/phase3/summary.md`](isolation/phase3/summary.md).
 
 ## Paired evaluation outcome
 

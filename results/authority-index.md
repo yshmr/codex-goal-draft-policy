@@ -1,5 +1,15 @@
 # Result authority index
 
+## Final v2 closeout authority
+
+- Canonical authority: [`v2/closeout.md`](v2/closeout.md)
+- Status: **`CLOSED — IMPLEMENTATION RETAINED; COMPARATIVE CLAIM WITHHELD`**
+- Scope retained: repository implementation/readiness, pure validation, detector fixtures, failure-preserving audit design, and the exact bounded E2E-01 revision evidence.
+- Claim withheld: no valid candidate-versus-baseline comparison, Skill-quality superiority, trigger/draft-quality improvement, generalization, or production reliability.
+- Archive: transition mode `archive`; next phase/task/goal `null`; reopening requires new explicit user authority and a new contract.
+
+This closeout is a publication and archive boundary. It does not supersede or relabel the authorities indexed below.
+
 ## Historical v1
 
 - Authority: [`v1-evaluation.md`](v1-evaluation.md)
@@ -71,7 +81,7 @@ This is the last isolation-witness remediation. It preserves every earlier label
 - Final summary: [`v2/isolation/phase3/summary.md`](v2/isolation/phase3/summary.md)
 - Revision: [`R-014`](revisions/R-014-phase3-parity-path-separator/)
 
-Final Remediation Phase 3 decision: `REJECT`. No post-hoc normalization or retry was performed. Isolation remediation is closed, valid paired smoke remains ineligible, and the next candidate is bounded evidence-program closeout selection rather than another provider experiment.
+Final Remediation Phase 3 decision: `REJECT`. No post-hoc normalization or retry was performed. Isolation remediation is closed, valid paired smoke remains ineligible, and the bounded evidence-program closeout is finalized without another provider experiment.
 
 ## E2E authority
 

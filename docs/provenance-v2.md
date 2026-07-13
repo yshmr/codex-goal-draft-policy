@@ -42,6 +42,8 @@ These are reasoned interpretations, not direct statements from official sources.
 
 ## Tested observations
 
+The v2 evidence program is closed under [`results/v2/closeout.md`](../results/v2/closeout.md) with status `CLOSED — IMPLEMENTATION RETAINED; COMPARATIVE CLAIM WITHHELD`. That authority permits publication of implementation/readiness, the failure-preserving audit method, pure validation, detector fixtures, and exact bounded E2E-01 evidence. It withholds candidate-versus-baseline superiority, trigger/draft-quality improvement, broad generalization, and production-reliability claims.
+
 ### Historical v1 authority
 
 [`results/v1-evaluation.md`](../results/v1-evaluation.md) records manual observations made before this v2 program:
@@ -60,6 +62,8 @@ Six paired provider manifests were committed as contaminated while testing Skill
 The bounded Phase 1 follow-up then ran two isolation hypotheses/four cells. H1 remained inconclusive after a missing container CA bundle prevented provider execution. H2 completed normally and proved the baseline absence/parity/hash gates, but not the predeclared candidate source-read/marker witness. Its candidate-specific prose was not reinterpreted as mechanical evidence; the hypothesis family was rejected and Phase 2 was not started.
 
 A separate Replacement Phase 2 then ran one fresh mechanical-witness hypothesis/two cells. The mount-free outer container allowed both cells to complete normally with the inner sandbox disabled, and baseline/boundary/parity/hash/safety/freshness gates passed. The candidate's shell-wrapped command representation did not match the frozen exact-command substring, so the witness method was rejected without post-hoc normalization or another run. Paired smoke was not started.
+
+Final Remediation Phase 3 retained one narrower observation: the candidate structured source read preceded a separate exact-output action, and baseline/boundary/hash/safety/freshness gates passed. Frozen inventory parity failed on Windows backslash versus normalized slash serialization, so the normal pair remains `REJECT`; the observation is not adopted as an isolation method or comparative result.
 
 The complete tested-observation summary is [`results/v2/summary.md`](../results/v2/summary.md). The predeclared contract, runner, fixtures, and unexecuted cases remain methods rather than results.
 

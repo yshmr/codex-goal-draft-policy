@@ -1,5 +1,7 @@
 # codex-goal-draft-policy
 
+> **Final v2 status:** `CLOSED — IMPLEMENTATION RETAINED; COMPARATIVE CLAIM WITHHELD`. The implementation and evaluation design are retained. Only the exact bounded E2E-01 revision is supported empirical Goal evidence; a valid candidate-versus-baseline comparison, E2E-02/03, critical n=3, and blind review were not proved or not executed. See the canonical [`bounded evidence-program closeout`](results/v2/closeout.md).
+
 ## 60秒概要
 
 これは、Codexの`/goal`を**有効化する前**に、人間がレビューできるcompletion contractを作成・批評するinstall可能なSkillと、そのSkillを再現可能に評価する独立repositoryです。
@@ -8,7 +10,7 @@
 - Codex固有の価値: explicit/implicit Skill invocation、`/goal`のthread-scoped lifecycle、draftとactivationの責任境界を直接評価します。
 - 配布物: [`skill/goal-draft-policy`](skill/goal-draft-policy/) がinstall単位です。
 - 評価物: 16 trigger case、12 draft-quality case、3 E2E case、8 synthetic fixture、`codex exec --json` runner、deterministic grader、schema/hash/safety validatorがあります。
-- 現在の結果: pure validationは31 case・8 fixtureでPASSし、Phase 3 detector fixtureは17/17 PASS。paired provider比較は6 runすべてcondition contaminationのため`INCONCLUSIVE`。Phase 1とReplacement Phase 2は`REJECT`。最後のremediationであるPhase 3はcandidate structured source→actionとbaseline/boundary/hash/safetyを通したものの、committed runnerのpath-separator inventory parityがFAILしたため`REJECT`です。追加isolation remediationとpaired smokeは不可で、次はbounded closeout判断です。実 `/goal` E2E-01はrevision runで達成・fresh verificationを確認。E2E-02/03、blind review、critical n=3は未実行です。
+- 現在の結果: evidence programは`CLOSED — IMPLEMENTATION RETAINED; COMPARATIVE CLAIM WITHHELD`。pure validationは31 case・8 fixture、Phase 3 detector fixtureは17/17 PASS。paired provider比較は6 runすべてcondition contaminationのため`INCONCLUSIVE`、Phase 1/2/3は`REJECT`です。実 `/goal` E2E-01 revisionはexact bounded objectiveで達成・fresh verificationを確認しましたが、比較結果へ一般化しません。E2E-02/03、blind review、critical n=3は未実行です。
 - authority: 既存v1 manual resultは`KEEP v1`。v2はmanifest単位でrevision・failed・contaminatedを分離し、passing rerunで過去failureを上書きしません。
 - claim境界: OpenAI公認、production保証、Codex reliability一般、統計的有意性は主張しません。
 
@@ -101,6 +103,7 @@ Skillはこのdraftをactivateしません。人間が確認した後、別のGo
 
 | Authority | 状態 | 解釈 |
 |---|---|---|
+| v2 final closeout | `CLOSED — IMPLEMENTATION RETAINED; COMPARATIVE CLAIM WITHHELD` | 実装とbounded E2E-01 evidenceを保持。baseline superiority claimは公開しない。 |
 | v1 manual evaluation | `KEEP v1` | T06初回failure、revision、clean retest、O-01/O-02/O-03を保存。上書きしない。 |
 | v2 predeclared contract | frozen | provider実行前のcase/rubric/gate authority。 |
 | v2 paired provider result | `INCONCLUSIVE` | 6 run / 10 cellはすべてcondition isolation contamination。valid `with_skill` / `without_skill`比較なし。 |
@@ -112,7 +115,7 @@ Skillはこのdraftをactivateしません。人間が確認した後、別のGo
 | `/goal` E2E-01 revision | `PASS` | exact objective activation、TUI achieved、fresh verifier exit 0、verifier不変。 |
 | `/goal` E2E-02 / E2E-03 | `UNEXECUTED` | blocker/decision contractとfixtureのみ。結果claimなし。 |
 
-結果要約は[`results/v2/summary.md`](results/v2/summary.md)、完全な索引は[`results/authority-index.md`](results/authority-index.md)です。blind reviewとcritical n=3はcondition setupが有効化できなかったため未実行で、統計的主張はしません。
+canonical final authorityは[`results/v2/closeout.md`](results/v2/closeout.md)、結果要約は[`results/v2/summary.md`](results/v2/summary.md)、完全な索引は[`results/authority-index.md`](results/authority-index.md)です。blind reviewとcritical n=3はcondition setupが有効化できなかったため未実行で、統計的主張はしません。
 
 Phase 1のpredeclared contract、immutable manifests、failure-driven revision、handoffは[`results/v2/isolation/phase1/summary.md`](results/v2/isolation/phase1/summary.md)にあります。candidateの文章スタイルはmechanical invocation evidenceへ再解釈していません。
 
