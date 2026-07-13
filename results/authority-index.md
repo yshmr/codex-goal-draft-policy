@@ -39,6 +39,18 @@ Current paired authorities are all contaminated; none supports a with/without co
 
 Program decision: `INCONCLUSIVE`. Ten contaminated cells are preserved, and no critical n=3 matrix or blind subjective review was run.
 
+## Phase 1 isolation remediation authority
+
+The bounded follow-up is separate from the full paired matrix and preserves all earlier run labels.
+
+- Predeclared design/contract: [`../evals/contracts/phase1-isolation.json`](../evals/contracts/phase1-isolation.json)
+- H1 [`20260713065021-h1-container-cwd-repository-skill`](v2/isolation/phase1/20260713065021-h1-container-cwd-repository-skill/manifest.json): `INCONCLUSIVE`; candidate and baseline exited before model output because the container lacked native root CAs.
+- H2 [`20260713065345-h2-container-repo-root-ancestor-scan`](v2/isolation/phase1/20260713065345-h2-container-repo-root-ancestor-scan/manifest.json): `REJECT`; baseline absence, parity, and hash validation passed, but candidate mechanical witness failed.
+- Final summary: [`v2/isolation/phase1/summary.md`](v2/isolation/phase1/summary.md)
+- Revision chain: [`R-010`](revisions/R-010-phase1-isolation-boundary/), [`R-011`](revisions/R-011-container-ca-trust/), [`R-012`](revisions/R-012-candidate-witness-unavailable/)
+
+Phase 1 decision: `REJECT hypothesis family` after two hypotheses/four cells. No passing comparison was created, and Phase 2 paired smoke is not eligible to start.
+
 ## E2E authority
 
 E2E results live separately under `results/v2/e2e/`:

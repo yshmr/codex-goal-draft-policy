@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0-phase1-isolation-manifest",
+  "phase": "phase1",
+  "run_id": "20260713065345-h2-container-repo-root-ancestor-scan",
+  "authority": "revision",
+  "hypothesis_id": "H2-container-repo-root-ancestor-scan",
+  "executed_at": "2026-07-13T06:53:45.582Z",
+  "design_commit": "4a9976fa2de8d6e8cc52199d3050848cc6b81b07",
+  "contract_sha256": "caa53832845416e347037d691cc74a56b727550b24ab7af46a913e6c31c3d66e",
+  "codex_version": "codex-cli 0.143.0",
+  "model": "gpt-5.4",
+  "effort": "medium",
+  "sandbox": "read-only",
+  "container_platform": "linux/amd64",
+  "container_base": "node@sha256:358a55f9683d8444a810bf36ff1ea4f60522f55a82cada25f7eabdf79e445226",
+  "runtime_image_id": "sha256:480f80aca635842cc14e032a63cd9ce0bbfebf2751dfa7e470d6840706efa813",
+  "source_skill_sha256": "12f2659e171d6441154167029143845abc15b90da6f967cef8bcffaee0394d22",
+  "instrumented_candidate_skill_sha256": "e163e66c28e0da8e922d5f4b4b0c1bc07b876a8d5dc20c092623580d654c93de",
+  "condition_order": [
+    "candidate",
+    "baseline"
+  ],
+  "condition_delta": {
+    "candidate": "Copy the committed candidate Skill into /workspace/.agents/skills/goal-draft-policy and append only the fixed HTML-comment witness.",
+    "baseline": "Do not create /workspace/.agents/skills.",
+    "all_other_inputs": "byte-identical within a hypothesis pair"
+  },
+  "mount_policy": [
+    "synthetic workspace -> /workspace",
+    "per-cell auth-only CODEX_HOME -> /codex-home",
+    "host profile not mounted"
+  ],
+  "parity": {
+    "prompt_sha256_equal": true,
+    "source_fixture_sha256_equal": true,
+    "control_fingerprint_sha256_equal": true,
+    "codex_model_effort_sandbox_image_equal": true,
+    "auth_bytes_equal": true,
+    "only_declared_condition_delta": true,
+    "pass": true
+  },
+  "gates": {
+    "candidate_mechanical_witness": false,
+    "baseline_absence_witness": true,
+    "condition_parity": true,
+    "manifest_result_hash_validation": true
+  },
+  "decision": "REJECT",
+  "results": [
+    {
+      "condition": "candidate",
+      "exit_code": 0,
+      "result_path": "results/v2/isolation/phase1/20260713065345-h2-container-repo-root-ancestor-scan/candidate.json",
+      "result_sha256": "9433261347200d13a240193ed5fe24974abdc0bd2a549b033c041e276414a7ae",
+      "raw_trace_sha256": "00ef08f93cd38b767defc69746d0a24294a8ea7109f8d6bf17ec99ae4daff213",
+      "raw_output_sha256": "4457e2cd7836a46acd3ef65ad259b39debcc3707755df62c87f59451a5e32f28"
+    },
+    {
+      "condition": "baseline",
+      "exit_code": 0,
+      "result_path": "results/v2/isolation/phase1/20260713065345-h2-container-repo-root-ancestor-scan/baseline.json",
+      "result_sha256": "055b5298aa13a215ac4420a0c4d1bccfa170ee6a59a872d54b05147c9167ae22",
+      "raw_trace_sha256": "8d842c6ab61cb5479ccb46da7fe337556b7e185f13b212be08e08415f50953e6",
+      "raw_output_sha256": "fa76df5e75d40d2007b936f6ce2648764a53ac40c3cd5f3152704e5fdde1b86c"
+    }
+  ],
+  "notes": "Raw JSONL, raw output, auth, absolute host paths, and session identifiers remain local-only."
+}

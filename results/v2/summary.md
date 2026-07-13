@@ -8,12 +8,19 @@ Recorded: 2026-07-13
 |---|---|---|
 | Pure validation | PASS: 31 cases, 8 fixtures | Local `npm test`; reproducible in pure CI |
 | Paired `with_skill` / `without_skill` | INCONCLUSIVE | Six committed runs are `contaminated`; no valid paired comparison |
+| Phase 1 isolation remediation | REJECT hypothesis family | Two hypotheses / four cells; candidate mechanical witness not established |
 | Blind subjective review | UNEXECUTED | No scores claimed |
 | Critical n=3 provider cases | UNEXECUTED | Condition isolation failed before full matrix |
 | Real `/goal` E2E-01 | PASS on revision | [`revision` manifest](e2e/20260713062403-e2e-01-interactive-revision/manifest.json) |
 | Real `/goal` E2E-02 / E2E-03 | UNEXECUTED | Contracts and fixtures only |
 
 No statistical significance, population-level superiority, or general Codex reliability claim is supported.
+
+## Phase 1 isolation remediation
+
+The predeclared bounded follow-up ran two hypotheses with one candidate and one baseline cell each. H1 is `INCONCLUSIVE` because both cells stopped before model output when the slim container lacked root CAs. After preserving that failure and committing the CA prerequisite revision, H2 completed both cells under Codex CLI 0.143.0, `gpt-5.4`, medium effort, and a read-only sandbox.
+
+H2 passed baseline absence, condition parity, and published manifest/result/hash validation. It failed candidate mechanical witness: JSONL had no exact repository `SKILL.md` read and no fixed marker. Candidate-specific prose was not promoted because output style was predeclared as insufficient. The family is `REJECT`, the maximum two hypotheses/four cells was reached, and Phase 2 is not eligible. See [`isolation/phase1/summary.md`](isolation/phase1/summary.md).
 
 ## Paired evaluation outcome
 

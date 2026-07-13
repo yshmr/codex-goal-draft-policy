@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0-phase1-isolation-result",
+  "run_id": "20260713065345-h2-container-repo-root-ancestor-scan",
+  "hypothesis_id": "H2-container-repo-root-ancestor-scan",
+  "condition": "baseline",
+  "exit_code": 0,
+  "source_fixture_sha256": "0365706d14c8f1e9a82e29681d810ea35adc08b36d9f1cd33f53747ab639578d",
+  "prompt_sha256": "fc478245c1ec8f4d6f0af5a8ae98efe9f950f79e247a2bdde5a8c0293e7b5bb8",
+  "source_skill_sha256": "12f2659e171d6441154167029143845abc15b90da6f967cef8bcffaee0394d22",
+  "instrumented_skill_sha256": null,
+  "skill_inventory": [],
+  "source_read_observed": false,
+  "any_goal_skill_read_observed": false,
+  "external_goal_skill_read_observed": false,
+  "marker_in_trace": false,
+  "marker_in_output": false,
+  "host_profile_mounted": false,
+  "auth_bytes_match_source": true,
+  "control_fingerprint_sha256": "e34a6dc127b460f8a82dc4d1ad032756d8627a3ff6ca157c99af24362013cf21",
+  "usage": {
+    "input_tokens": 42814,
+    "cached_input_tokens": 20992,
+    "output_tokens": 1058,
+    "reasoning_output_tokens": 691
+  },
+  "raw_trace_sha256": "8d842c6ab61cb5479ccb46da7fe337556b7e185f13b212be08e08415f50953e6",
+  "raw_output_sha256": "fa76df5e75d40d2007b936f6ce2648764a53ac40c3cd5f3152704e5fdde1b86c",
+  "sanitized_output_sha256": "fa76df5e75d40d2007b936f6ce2648764a53ac40c3cd5f3152704e5fdde1b86c",
+  "sanitized_output": "I couldn’t review `PROBE.md` because this session cannot read local files: shell access is blocked by the sandbox (`bwrap` namespace failure), and no alternate file-read tool is exposed here.\n\nPaste the contents of `PROBE.md` in the chat, and I’ll review it as a human-checkable Goal draft only, with focus on:\n- ambiguity\n- activation risk\n- missing constraints\n- unsafe or premature execution language\n\nI’ll stop before any activation step."
+}

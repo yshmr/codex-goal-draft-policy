@@ -13,6 +13,8 @@ The following claims are taken from current public OpenAI material reviewed on t
 3. Codex Skills use progressive disclosure. Codex initially receives a Skill's name, description, and path, then loads `SKILL.md` when selected. Skills can be invoked explicitly or implicitly; implicit selection is matched from the description. Source: [Build skills](https://developers.openai.com/codex/skills).
 4. A Skill directory requires `SKILL.md` and may include scripts, references, assets, and `agents/openai.yaml`. The metadata file can set `policy.allow_implicit_invocation`; its documented default is true. Source: [Build skills](https://developers.openai.com/codex/skills).
 5. OpenAI's Skill-eval article recommends explicit and implicit invocation cases, narrowly targeted eval prompts, checkable definitions of success, rubric-based grading, and repository cleanliness/runtime checks where appropriate. Source: [Testing Agent Skills Systematically with Evals](https://developers.openai.com/blog/eval-skills).
+6. Repository Skills are scanned from `.agents/skills` from CWD through repository root; user Skills are read from the user home. Source: [Build skills](https://developers.openai.com/codex/skills).
+7. `codex exec --json` prints newline-delimited JSON events. Source: [CLI reference](https://developers.openai.com/codex/cli/reference).
 
 These facts do not say that this local policy is endorsed, complete, or more reliable than another Skill.
 
@@ -54,6 +56,8 @@ This repository does not reconstruct missing raw v1 traces or reinterpret those 
 ### v2 observations
 
 Six paired provider manifests were committed as contaminated while testing Skill condition isolation under Codex CLI 0.143.0. None is promoted to a valid with/without comparison; the program decision is inconclusive. One clean interactive `/goal` E2E-01 revision run recorded exact activation, a human-observed achieved terminal label, and fresh verifier exit code 0 after failed and contaminated predecessors were preserved.
+
+The bounded Phase 1 follow-up then ran two isolation hypotheses/four cells. H1 remained inconclusive after a missing container CA bundle prevented provider execution. H2 completed normally and proved the baseline absence/parity/hash gates, but not the predeclared candidate source-read/marker witness. Its candidate-specific prose was not reinterpreted as mechanical evidence; the hypothesis family was rejected and Phase 2 was not started.
 
 The complete tested-observation summary is [`results/v2/summary.md`](../results/v2/summary.md). The predeclared contract, runner, fixtures, and unexecuted cases remain methods rather than results.
 

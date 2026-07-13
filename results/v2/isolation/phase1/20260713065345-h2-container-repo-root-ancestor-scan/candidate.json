@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0-phase1-isolation-result",
+  "run_id": "20260713065345-h2-container-repo-root-ancestor-scan",
+  "hypothesis_id": "H2-container-repo-root-ancestor-scan",
+  "condition": "candidate",
+  "exit_code": 0,
+  "source_fixture_sha256": "0365706d14c8f1e9a82e29681d810ea35adc08b36d9f1cd33f53747ab639578d",
+  "prompt_sha256": "fc478245c1ec8f4d6f0af5a8ae98efe9f950f79e247a2bdde5a8c0293e7b5bb8",
+  "source_skill_sha256": "12f2659e171d6441154167029143845abc15b90da6f967cef8bcffaee0394d22",
+  "instrumented_skill_sha256": "e163e66c28e0da8e922d5f4b4b0c1bc07b876a8d5dc20c092623580d654c93de",
+  "skill_inventory": [
+    "/workspace/.agents/skills/goal-draft-policy/agents/openai.yaml",
+    "/workspace/.agents/skills/goal-draft-policy/references/review-checklist.md",
+    "/workspace/.agents/skills/goal-draft-policy/SKILL.md"
+  ],
+  "source_read_observed": false,
+  "any_goal_skill_read_observed": false,
+  "external_goal_skill_read_observed": false,
+  "marker_in_trace": false,
+  "marker_in_output": false,
+  "host_profile_mounted": false,
+  "auth_bytes_match_source": true,
+  "control_fingerprint_sha256": "e34a6dc127b460f8a82dc4d1ad032756d8627a3ff6ca157c99af24362013cf21",
+  "usage": {
+    "input_tokens": 65446,
+    "cached_input_tokens": 19456,
+    "output_tokens": 884,
+    "reasoning_output_tokens": 403
+  },
+  "raw_trace_sha256": "00ef08f93cd38b767defc69746d0a24294a8ea7109f8d6bf17ec99ae4daff213",
+  "raw_output_sha256": "4457e2cd7836a46acd3ef65ad259b39debcc3707755df62c87f59451a5e32f28",
+  "sanitized_output_sha256": "4457e2cd7836a46acd3ef65ad259b39debcc3707755df62c87f59451a5e32f28",
+  "sanitized_output": "1. Goal mode suitability: undetermined until `PROBE.md` is inspectable.  \n2. Evidence used: the provided `goal-draft-policy` skill only; I could not access local files because shell reads are blocked by the sandbox and no workspace file resource is exposed here.  \n3. Ready-to-paste `/goal` draft: not produced, because reviewing the actual draft is the task.  \n4. Design rationale: this skill requires evidence-first review of the real draft and any available checklist.  \n5. Remaining risk: any review without `PROBE.md` would be invented rather than grounded.\n\nPaste `PROBE.md` here and I’ll review it as a human-reviewable Goal draft. It has not been activated."
+}

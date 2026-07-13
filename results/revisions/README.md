@@ -19,3 +19,4 @@ Current v2 histories:
 - [`R-009-exact-goal-objective`](R-009-exact-goal-objective/): rejected punctuation-loss activation and exact-objective rerun policy.
 - [`R-010-phase1-isolation-boundary`](R-010-phase1-isolation-boundary/): inherited paired-isolation failure, boundary diagnosis, and predeclared container revision.
 - [`R-011-container-ca-trust`](R-011-container-ca-trust/): immutable H1 infrastructure failure, root-CA diagnosis, and bounded H2 runner prerequisite revision.
+- [`R-012-candidate-witness-unavailable`](R-012-candidate-witness-unavailable/): normal H2 pair, unavailable candidate mechanical witness, and maximum-trial rejection.

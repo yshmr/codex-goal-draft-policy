@@ -1,0 +1,2 @@
+results/v2/isolation/**/*.json text eol=lf
+results/v2/isolation/**/*.sha256 text eol=lf
