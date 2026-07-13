@@ -1,0 +1,50 @@
+{
+  "schema_version": "2.0",
+  "run_id": "20260713055411-revision",
+  "authority": "contaminated",
+  "executed_at": "2026-07-13T05:54:11.561Z",
+  "codex_version": "codex-cli 0.143.0",
+  "model": "gpt-5.4",
+  "effort": "medium",
+  "skill_commit": "a377d8acdcdeb5e58a55bc2db180088a4b62de10",
+  "contract_sha256": "726d9451247577c0f9b67dad4806aeaf6ae95748f4d0c9f423386f2f301b850f",
+  "notes": "Sanitized final outputs are committed; raw JSONL traces and raw outputs remain local-only, with hashes recorded. Repository-local current Skill discovery succeeded, but the with_skill trace first loaded the stale real-profile Skill. Preserve this run as contaminated; current-marker presence alone was not sufficient isolation evidence.",
+  "results": [
+    {
+      "case_id": "T-01",
+      "condition": "with_skill",
+      "repetition": 1,
+      "fixture_sha256": "416ad5483aefa5544fb51707d3277dcfc31de457e6621cd0078f4c3e6138c4e8",
+      "prompt_sha256": "ed1a4711789a0a2132008626d4769c1dc8779a2b689de102c3cdbfc8a22b0c91",
+      "exit_code": 0,
+      "usage": {
+        "input_tokens": 99573,
+        "cached_input_tokens": 36480,
+        "output_tokens": 3000,
+        "reasoning_output_tokens": 398
+      },
+      "result_path": "results/v2/runs/20260713055411-revision/t-01-with_skill-1.json",
+      "result_sha256": "b4dcda9f402029c0ad67c6e8399f6188fc82eb6f719c9249fa7baf3abf5aaede",
+      "raw_trace_sha256": "590bf908278616496442d014422b7c9df4a8b40c6b1e45dc803b6413875bc3f1",
+      "raw_output_sha256": "f32fcae788e23cc97ee8e2e1c60f9beaab2bfe1516bf8792d6b83e712b27d24d"
+    },
+    {
+      "case_id": "T-01",
+      "condition": "without_skill",
+      "repetition": 1,
+      "fixture_sha256": "416ad5483aefa5544fb51707d3277dcfc31de457e6621cd0078f4c3e6138c4e8",
+      "prompt_sha256": "ed1a4711789a0a2132008626d4769c1dc8779a2b689de102c3cdbfc8a22b0c91",
+      "exit_code": 0,
+      "usage": {
+        "input_tokens": 64750,
+        "cached_input_tokens": 28032,
+        "output_tokens": 2305,
+        "reasoning_output_tokens": 169
+      },
+      "result_path": "results/v2/runs/20260713055411-revision/t-01-without_skill-1.json",
+      "result_sha256": "0fcd4e08624c0b53086570ed95d763502b3a344fe8ab24b9e7921298ae66db20",
+      "raw_trace_sha256": "8b0ed0992e055e125dc701117a30ea15f98086939ec3fbd7794056c7d410434b",
+      "raw_output_sha256": "2d4ab3fb251722cb8280f592e3b311c9140028e86406297d160cea970492b7d5"
+    }
+  ]
+}

@@ -59,10 +59,15 @@ if (fs.existsSync(path.join(sourceHome, "auth.json"))) fs.copyFileSync(path.join
 
 const outputFile = path.join(localRoot, "last-message.txt");
 const prompt = `This is a separate, explicitly approved synthetic Goal execution workflow. The reviewed Goal is in GOAL.md and its approved SHA-256 is ${goalSha}. Read it, call the Goal creation capability with that exact objective, then execute only inside this isolated fixture until the Goal is verified or reaches its honest task-specific blocker. Do not invoke any Goal-drafting Skill. Report actual command evidence and terminal Goal status.`;
+const globalSkillPath = path.join(os.homedir(), ".agents", "skills", "goal-draft-policy", "SKILL.md");
+const globalSkillDisable = fs.existsSync(globalSkillPath)
+  ? `skills.config=[{path=\"${globalSkillPath.replaceAll("\\", "/").replaceAll("\"", "\\\"")}\",enabled=false}]`
+  : "";
 const commandArgs = [
   "exec", "--ignore-user-config", "--ephemeral", "--json", "--enable", "goals", "--sandbox", "workspace-write", "--skip-git-repo-check",
   "-C", workDir, "-m", contract.controlled_variables.model,
   "-c", `model_reasoning_effort=\"${contract.controlled_variables.effort}\"`,
+  ...(globalSkillDisable ? ["-c", globalSkillDisable] : []),
   "-o", outputFile, prompt
 ];
 const execution = await run(codex.command, [...codex.prefix, ...commandArgs], { cwd: workDir, env: { ...process.env, CODEX_HOME: isolatedHome, HOME: isolatedProfile, USERPROFILE: isolatedProfile }, stdio: ["ignore", "pipe", "pipe"] });

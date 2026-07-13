@@ -74,6 +74,10 @@ if (dirty && !options.allowDirty) throw new Error("Worktree must be clean before
 const skillCommit = execFileSync(git, ["rev-parse", "HEAD"], { cwd: repoRoot, encoding: "utf8" }).trim();
 const codexVersion = execFileSync(codex.command, [...codex.prefix, "--version"], { encoding: "utf8" }).trim();
 const sourceCodexHome = process.env.CODEX_HOME || path.join(os.homedir(), ".codex");
+const globalSkillPath = path.join(os.homedir(), ".agents", "skills", "goal-draft-policy", "SKILL.md");
+const globalSkillDisable = fs.existsSync(globalSkillPath)
+  ? `skills.config=[{path=\"${globalSkillPath.replaceAll("\\", "/").replaceAll("\"", "\\\"")}\",enabled=false}]`
+  : "";
 const timestamp = new Date();
 const runId = timestamp.toISOString().replace(/[-:TZ.]/g, "").slice(0, 14).toLowerCase() + `-${options.authority}`;
 const localRoot = path.join(repoRoot, ".eval-work", runId);
@@ -115,6 +119,7 @@ for (const caseDef of selected) {
         "exec", "--ignore-user-config", "--ephemeral", "--json", "--sandbox", "read-only", "--skip-git-repo-check",
         "-C", workDir, "-m", contract.controlled_variables.model,
         "-c", `model_reasoning_effort=\"${contract.controlled_variables.effort}\"`,
+        ...(globalSkillDisable ? ["-c", globalSkillDisable] : []),
         "-o", outputFile, caseDef.prompt
       ];
       console.log(`[${cellName}] ${codexVersion} ${contract.controlled_variables.model}/${contract.controlled_variables.effort}`);
@@ -126,6 +131,14 @@ for (const caseDef of selected) {
       const finalOutput = sanitize(rawOutput, [repoRoot, workDir, isolatedHome, isolatedProfile, sourceCodexHome, os.homedir()]);
       const events = parseJsonlLenient(rawTrace);
       const grade = gradeRun({ caseDef, condition, traceText: rawTrace, outputText: finalOutput, expectedSkillMarker: "An already-achieved target is not automatically a durable Goal." });
+      const commandTexts = events.filter((event) => event?.item?.type === "command_execution").map((event) => event.item.command || "");
+      const externalSkillLoad = commandTexts.some((command) => command.toLowerCase().includes(globalSkillPath.toLowerCase()));
+      grade.external_skill_load_observed = externalSkillLoad;
+      if (externalSkillLoad) {
+        grade.pass = false;
+        if (!grade.failed_checks.includes("skill_source_isolation")) grade.failed_checks.push("skill_source_isolation");
+        grade.contamination_findings.push("A Goal Draft Skill was loaded from the real user profile.");
+      }
       const result = {
         schema_version: "2.0",
         run_id: runId,
