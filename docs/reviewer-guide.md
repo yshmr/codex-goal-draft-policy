@@ -3,7 +3,7 @@
 ## Five-minute path
 
 1. Read the 60-second summary and claims boundary in [`../README.md`](../README.md).
-2. Inspect [`../results/authority-index.md`](../results/authority-index.md); do not treat contract files as results.
+2. Inspect [`../results/v2/summary.md`](../results/v2/summary.md) and [`../results/authority-index.md`](../results/authority-index.md); do not treat contract files as results.
 3. Review the Skill frontmatter and scope exclusions in [`../skill/goal-draft-policy/SKILL.md`](../skill/goal-draft-policy/SKILL.md).
 4. Confirm the predeclared gates in [`../evals/contracts/v2-predeclared.json`](../evals/contracts/v2-predeclared.json).
 5. Run `npm test` and check committed manifests, if any, under `results/v2/runs/`.

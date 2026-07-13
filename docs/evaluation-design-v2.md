@@ -21,6 +21,8 @@ The machine-readable authority is [`../evals/contracts/v2-predeclared.json`](../
 - Repetitions: case-declared n, up to 3. Critical cases request n=3 when budget/access permit. Partial execution is labeled partial in reviewer interpretation.
 - Order: case, condition, and repetition order is explicit in the manifest. This design does not claim order randomization.
 
+The intended Skill-isolation method did not establish clean candidate invocation in tested Codex CLI 0.143.0. All resulting paired manifests are therefore contaminated, and the comparison is inconclusive rather than evaluated against the gates.
+
 ## Case coverage
 
 The trigger set has 16 cases in [`../evals/cases/trigger.jsonl`](../evals/cases/trigger.jsonl). The quality set has 12 cases in [`../evals/cases/quality.jsonl`](../evals/cases/quality.jsonl), including:

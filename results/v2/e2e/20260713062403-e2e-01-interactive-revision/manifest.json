@@ -1,0 +1,8 @@
+{
+  "schema_version": "2.0-e2e-manifest",
+  "run_id": "20260713062403-e2e-01-interactive-revision",
+  "authority": "revision",
+  "result_path": "results/v2/e2e/20260713062403-e2e-01-interactive-revision/result.json",
+  "result_sha256": "5300464521699e3984cb6e604f6c6535982b63d0805560cb91b964676a27217e",
+  "note": "Interactive /goal activation is trace-backed; the rendered terminal label is explicitly human-observed. Raw session and unsanitized output remain local-only."
+}

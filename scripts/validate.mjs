@@ -8,6 +8,43 @@ const errors = [];
 const check = (condition, message) => { if (!condition) errors.push(message); };
 const relative = (file) => path.relative(repoRoot, file).split(path.sep).join("/");
 
+function validateAgainstSchema(value, schema, label) {
+  const deepEqual = (left, right) => JSON.stringify(left) === JSON.stringify(right);
+  if (Object.hasOwn(schema, "const")) check(deepEqual(value, schema.const), `${label}: schema const mismatch`);
+  if (schema.enum) check(schema.enum.some((item) => deepEqual(value, item)), `${label}: value outside schema enum`);
+  if (schema.type) {
+    const matches = schema.type === "array" ? Array.isArray(value)
+      : schema.type === "object" ? value !== null && typeof value === "object" && !Array.isArray(value)
+        : schema.type === "integer" ? Number.isInteger(value)
+          : typeof value === schema.type;
+    check(matches, `${label}: expected schema type ${schema.type}`);
+    if (!matches) return;
+  }
+  if (typeof value === "string") {
+    if (schema.minLength !== undefined) check(value.length >= schema.minLength, `${label}: shorter than minLength`);
+    if (schema.pattern) check(new RegExp(schema.pattern).test(value), `${label}: pattern mismatch`);
+    if (schema.format === "date-time") check(!Number.isNaN(Date.parse(value)), `${label}: invalid date-time`);
+  }
+  if (typeof value === "number") {
+    if (schema.minimum !== undefined) check(value >= schema.minimum, `${label}: below minimum`);
+    if (schema.maximum !== undefined) check(value <= schema.maximum, `${label}: above maximum`);
+  }
+  if (Array.isArray(value)) {
+    if (schema.minItems !== undefined) check(value.length >= schema.minItems, `${label}: fewer than minItems`);
+    if (schema.uniqueItems) check(new Set(value.map((item) => JSON.stringify(item))).size === value.length, `${label}: duplicate array item`);
+    if (schema.items) value.forEach((item, index) => validateAgainstSchema(item, schema.items, `${label}[${index}]`));
+  }
+  if (value !== null && typeof value === "object" && !Array.isArray(value)) {
+    for (const name of schema.required || []) check(Object.hasOwn(value, name), `${label}: missing required property ${name}`);
+    const properties = schema.properties || {};
+    for (const [name, child] of Object.entries(value)) {
+      if (properties[name]) validateAgainstSchema(child, properties[name], `${label}.${name}`);
+      else if (schema.additionalProperties === false) check(false, `${label}: unexpected property ${name}`);
+      else if (schema.additionalProperties && typeof schema.additionalProperties === "object") validateAgainstSchema(child, schema.additionalProperties, `${label}.${name}`);
+    }
+  }
+}
+
 function validateSkill() {
   const file = path.join(repoRoot, "skill", "goal-draft-policy", "SKILL.md");
   const text = fs.readFileSync(file, "utf8");
@@ -31,8 +68,10 @@ const knownChecks = new Set([
 
 function validateCases() {
   const cases = allCases();
+  const caseSchema = readJson(path.join(repoRoot, "evals", "schemas", "case.schema.json"));
   const ids = new Set();
   for (const item of cases) {
+    validateAgainstSchema(item, caseSchema, `case ${item.id || "<missing>"}`);
     check(/^(T|Q|E2E)-\d{2}$/.test(item.id || ""), `${item.id || "<missing>"}: invalid case ID`);
     check(!ids.has(item.id), `${item.id}: duplicate case ID`);
     ids.add(item.id);
@@ -116,11 +155,14 @@ function validatePublicSafety() {
 }
 
 function validatePublishedResults() {
+  const manifestSchema = readJson(path.join(repoRoot, "evals", "schemas", "manifest.schema.json"));
+  const resultSchema = readJson(path.join(repoRoot, "evals", "schemas", "result.schema.json"));
   const runs = path.join(repoRoot, "results", "v2", "runs");
   if (fs.existsSync(runs)) {
     for (const file of walkFiles(runs).filter((name) => name.endsWith("manifest.json"))) {
       const manifestFile = path.join(runs, file);
       const manifest = readJson(manifestFile);
+      validateAgainstSchema(manifest, manifestSchema, relative(manifestFile));
       check(manifest.schema_version === "2.0", `${file}: manifest schema version`);
       check(/^[a-f0-9]{40}$/.test(manifest.skill_commit || ""), `${file}: invalid skill commit`);
       check(/^[a-f0-9]{64}$/.test(manifest.contract_sha256 || ""), `${file}: invalid contract hash`);
@@ -131,6 +173,7 @@ function validatePublishedResults() {
         const bytes = fs.readFileSync(resultFile);
         check(sha256(bytes) === entry.result_sha256, `${file}: result hash mismatch ${entry.result_path}`);
         const result = JSON.parse(bytes.toString("utf8"));
+        validateAgainstSchema(result, resultSchema, entry.result_path);
         check(result.schema_version === "2.0", `${entry.result_path}: result schema version`);
         check(sha256(result.final_output) === result.output_sha256, `${entry.result_path}: final output hash mismatch`);
         check(result.case_id === entry.case_id && result.condition === entry.condition && result.repetition === entry.repetition, `${entry.result_path}: manifest identity mismatch`);
@@ -141,8 +184,11 @@ function validatePublishedResults() {
 
   const e2e = path.join(repoRoot, "results", "v2", "e2e");
   if (!fs.existsSync(e2e)) return;
+  const e2eManifestSchema = readJson(path.join(repoRoot, "evals", "schemas", "e2e-manifest.schema.json"));
+  const e2eResultSchema = readJson(path.join(repoRoot, "evals", "schemas", "e2e-result.schema.json"));
   for (const file of walkFiles(e2e).filter((name) => name.endsWith("manifest.json"))) {
     const manifest = readJson(path.join(e2e, file));
+    validateAgainstSchema(manifest, e2eManifestSchema, `results/v2/e2e/${file}`);
     check(manifest.schema_version === "2.0-e2e-manifest", `${file}: E2E manifest schema version`);
     const resultFile = path.join(repoRoot, manifest.result_path || "");
     check(fs.existsSync(resultFile), `${file}: missing E2E result ${manifest.result_path}`);
@@ -150,8 +196,18 @@ function validatePublishedResults() {
     const bytes = fs.readFileSync(resultFile);
     check(sha256(bytes) === manifest.result_sha256, `${file}: E2E result hash mismatch`);
     const result = JSON.parse(bytes.toString("utf8"));
+    validateAgainstSchema(result, e2eResultSchema, manifest.result_path);
     check(result.schema_version === "2.0-e2e", `${manifest.result_path}: E2E result schema version`);
     check(/^[a-f0-9]{64}$/.test(result.approved_goal_sha256 || ""), `${manifest.result_path}: approved Goal hash invalid`);
+  }
+}
+
+function validateManualReviews() {
+  const directory = path.join(repoRoot, "results", "v2", "manual-reviews");
+  if (!fs.existsSync(directory)) return;
+  const schema = readJson(path.join(repoRoot, "evals", "schemas", "manual-review.schema.json"));
+  for (const file of walkFiles(directory).filter((name) => name.endsWith(".json"))) {
+    validateAgainstSchema(readJson(path.join(directory, file)), schema, `results/v2/manual-reviews/${file}`);
   }
 }
 
@@ -174,6 +230,7 @@ validateSchemasAndContract();
 validateMarkdownLinks();
 validatePublicSafety();
 validatePublishedResults();
+validateManualReviews();
 validateGraderRegressions();
 const launcher = resolveCodexInvocation();
 if (process.platform === "win32" && launcher.strategy === "node-entrypoint") {

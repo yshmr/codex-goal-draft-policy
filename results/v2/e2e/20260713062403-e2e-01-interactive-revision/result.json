@@ -1,0 +1,36 @@
+{
+  "schema_version": "2.0-e2e",
+  "run_id": "20260713062403-e2e-01-interactive-revision",
+  "case_id": "E2E-01",
+  "executed_at": "2026-07-13T06:24:03.123Z",
+  "codex_version": "codex-cli 0.143.0",
+  "model": "gpt-5.4",
+  "effort": "medium",
+  "skill_commit": "46cb825c72629ae133f365480cdd194f22e662f5",
+  "fixture_sha256": "4fd6f500006f4ac4a7af23d3b110001efcedfa84b711c250cfeac9358098c5e7",
+  "approved_goal_sha256": "d0ddd7fc045954730198d889eea91480ec0e1fa13d0fe300ddaafb003a1b34bc",
+  "activation_observed": true,
+  "terminal_goal_state_observed": true,
+  "exit_code": 0,
+  "usage": {
+    "input_tokens": 202473,
+    "cached_input_tokens": 117120,
+    "output_tokens": 1678,
+    "reasoning_output_tokens": 450,
+    "total_tokens": 204151
+  },
+  "raw_trace_sha256": "272b6b19501563e4ddbe6bc0a30b49d194d2a84c5adadf7a0698cd05fbceaa0b",
+  "raw_output_sha256": "091966726b6a2cf24f812d1aecdc858fc13f06000fd2b9e952c1111b36cd73f2",
+  "final_output": "Updated [state.json](<LOCAL_PATH>\\state.json) to `{\"ready\":true}` and left [verify.mjs](<LOCAL_PATH>\\verify.mjs) unchanged.\n\nFresh verification passed with `node verify.mjs`, which printed `verified ready`.\n\nGoal usage: 85,996 tokens over about 86 seconds.",
+  "post_verification": {
+    "command": "node verify.mjs",
+    "exit_code": 0,
+    "stdout": "verified ready\n",
+    "stderr": "",
+    "verify_sha256_before": "83f2e25ac31ef06cd2175ad8d51e5d26341bd4392f6c2689dd2dcfa4fc8e6b99",
+    "verify_sha256_after": "83f2e25ac31ef06cd2175ad8d51e5d26341bd4392f6c2689dd2dcfa4fc8e6b99",
+    "terminal_observation": "achieved",
+    "terminal_observation_provenance": "Human-observed Codex TUI terminal label; the session JSONL records activation and task completion but not the rendered terminal label.",
+    "activation_event": "thread_goal_updated(active) with byte-identical approved objective"
+  }
+}

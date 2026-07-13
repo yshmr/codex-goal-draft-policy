@@ -8,7 +8,8 @@
 - Codex固有の価値: explicit/implicit Skill invocation、`/goal`のthread-scoped lifecycle、draftとactivationの責任境界を直接評価します。
 - 配布物: [`skill/goal-draft-policy`](skill/goal-draft-policy/) がinstall単位です。
 - 評価物: 16 trigger case、12 draft-quality case、3 E2E case、8 synthetic fixture、`codex exec --json` runner、deterministic grader、schema/hash/safety validatorがあります。
-- authority: 既存v1 manual resultは`KEEP v1`。v2のprovider-backed resultはmanifest単位で初回・revision・failed・contaminated等を分離します。未実行結果を成功として扱いません。
+- 現在の結果: pure validationは31 case・8 fixtureでPASS。paired provider比較は6 runすべてcondition contaminationのため`INCONCLUSIVE`。実 `/goal` E2E-01はfailureとcontaminated observationを保存した後、exact approved objectiveのrevision runで達成・fresh verificationを確認。E2E-02/03、blind review、critical n=3は未実行です。
+- authority: 既存v1 manual resultは`KEEP v1`。v2はmanifest単位でrevision・failed・contaminatedを分離し、passing rerunで過去failureを上書きしません。
 - claim境界: OpenAI公認、production保証、Codex reliability一般、統計的有意性は主張しません。
 
 ## Problem
@@ -102,10 +103,13 @@ Skillはこのdraftをactivateしません。人間が確認した後、別のGo
 |---|---|---|
 | v1 manual evaluation | `KEEP v1` | T06初回failure、revision、clean retest、O-01/O-02/O-03を保存。上書きしない。 |
 | v2 predeclared contract | frozen | provider実行前のcase/rubric/gate authority。 |
-| v2 provider result | manifest参照 | 実行済みmanifestだけが結果authority。ない場合は未実行。 |
-| `/goal` E2E | case別 | 実行可能性と人間承認境界を含め、実測したcaseだけを結果として扱う。 |
+| v2 paired provider result | `INCONCLUSIVE` | 6 run / 10 cellはすべてcondition isolation contamination。valid `with_skill` / `without_skill`比較なし。 |
+| `/goal` E2E-01 exec probe | `failed` | Goal lifecycle evidenceなし。通常taskをE2Eへ再解釈しない。 |
+| `/goal` E2E-01 development observation | `contaminated` | method commit前かつapproved objectiveと非同一。 |
+| `/goal` E2E-01 revision | `PASS` | exact objective activation、TUI achieved、fresh verifier exit 0、verifier不変。 |
+| `/goal` E2E-02 / E2E-03 | `UNEXECUTED` | blocker/decision contractとfixtureのみ。結果claimなし。 |
 
-完全な索引は[`results/authority-index.md`](results/authority-index.md)です。passing rerunは過去failureを置き換えません。
+結果要約は[`results/v2/summary.md`](results/v2/summary.md)、完全な索引は[`results/authority-index.md`](results/authority-index.md)です。blind reviewとcritical n=3はcondition setupが有効化できなかったため未実行で、統計的主張はしません。
 
 ## Reproduce
 
@@ -131,6 +135,8 @@ node scripts/run-evals.mjs --ids T-01,T-04,Q-01,Q-02 --max-repetitions 3 --publi
 
 runnerはCodex version、model、effort、実行日時、Skill commit、fixture SHA、prompt SHA、exit code、usage、raw trace/output SHAをmanifestへ記録します。raw JSONLにはsession identifierやlocal pathが含まれ得るためcommitせず、sanitized final outputとhashだけを公開します。
 
+実 `/goal` E2Eは、非対話probeとinteractive captureを分離します。正確な手順とhuman-observed terminal labelの制約は[`docs/e2e-protocol.md`](docs/e2e-protocol.md)にあります。
+
 GitHub Actionsはfrontmatter、schema、ID重複、Markdown link、result/hash、fixture integrity、public safety、生成差分をpure validationします。認証・費用・stochasticityを伴うprovider/Codex-backed evalは通常pushで実行しません。
 
 ## OpenAI `define-goal`との責任差
@@ -151,6 +157,9 @@ local Skillの独自価値は、activationしないこと、evaluation integrity
 - synthetic fixtureはreal repositoryの全分布を代表しません。
 - provider runはstochasticかつ費用・認証を要します。
 - E2Eはisolated synthetic fixtureに限定し、production systemを操作しません。
+- paired v2比較はclean candidate Skill discoveryを確立できず`INCONCLUSIVE`です。critical n=3とblind subjective reviewは未実行です。
+- 実測E2EはE2E-01のみです。E2E-02 blockerとE2E-03 unbiased decisionは未実証です。
+- local環境ではNode/monorepo commandとPython `compileall`はPASS。`pytest`未導入とGo toolchain不在のため、該当test commandは未実行です。
 - v1 manual observationは現在のautomated harnessで再解釈しません。
 
 ## Claims to Avoid

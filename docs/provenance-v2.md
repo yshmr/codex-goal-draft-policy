@@ -53,7 +53,9 @@ This repository does not reconstruct missing raw v1 traces or reinterpret those 
 
 ### v2 observations
 
-Only a committed manifest in `results/v2/runs/` is a v2 provider-backed observation. The predeclared contract, runner, and fixtures are methods, not results. An absent manifest means unexecuted, not passed.
+Six paired provider manifests were committed as contaminated while testing Skill condition isolation under Codex CLI 0.143.0. None is promoted to a valid with/without comparison; the program decision is inconclusive. One clean interactive `/goal` E2E-01 revision run recorded exact activation, a human-observed achieved terminal label, and fresh verifier exit code 0 after failed and contaminated predecessors were preserved.
+
+The complete tested-observation summary is [`results/v2/summary.md`](../results/v2/summary.md). The predeclared contract, runner, fixtures, and unexecuted cases remain methods rather than results.
 
 ## Source route note
 

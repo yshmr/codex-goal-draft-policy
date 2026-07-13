@@ -8,4 +8,10 @@ This directory contains committed, sanitized v2 evaluation results only.
 
 Raw JSONL traces, stderr, isolated auth, work copies, task/session identifiers, and local absolute paths remain under ignored `.eval-work/`. Manifests retain their SHA-256 hashes.
 
-An empty result area means unexecuted, not passing.
+Current snapshot:
+
+- six paired run manifests are `contaminated`; the paired program decision is `INCONCLUSIVE`;
+- E2E-01 retains one `failed` probe, one `contaminated` development observation, and one valid `revision` result;
+- E2E-02/E2E-03, critical n=3, and blind review are unexecuted.
+
+See [`summary.md`](summary.md) and [`../authority-index.md`](../authority-index.md). An absent result means unexecuted, not passing.

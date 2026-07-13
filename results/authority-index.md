@@ -28,11 +28,26 @@ Each run must live in `results/v2/runs/<run-id>/manifest.json`. The manifest's `
 - `contaminated`: prompt, fixture, condition isolation, raw handling, or contract freeze was violated;
 - `inconclusive`: valid evidence exists but does not support adopt/reject.
 
-No current entry means no committed v2 provider-backed result exists.
+Current paired authorities are all contaminated; none supports a with/without comparison:
+
+- [`20260713054519-revision`](v2/runs/20260713054519-revision/manifest.json): stale ambient Skill loaded in the candidate condition.
+- [`20260713055020-revision`](v2/runs/20260713055020-revision/manifest.json): redirected-home candidate not discovered.
+- [`20260713055411-revision`](v2/runs/20260713055411-revision/manifest.json): repository candidate found only after ambient Skill loading.
+- [`20260713055858-revision`](v2/runs/20260713055858-revision/manifest.json): ambient Skill disabled, but candidate absent.
+- [`20260713060246-revision`](v2/runs/20260713060246-revision/manifest.json): explicit candidate enable did not establish invocation.
+- [`20260713060519-revision`](v2/runs/20260713060519-revision/manifest.json): Git-root discovery hypothesis failed; invocation path false positive diagnosed separately.
+
+Program decision: `INCONCLUSIVE`. Ten contaminated cells are preserved, and no critical n=3 matrix or blind subjective review was run.
 
 ## E2E authority
 
-E2E results, when executed, live separately under `results/v2/e2e/`. A normal task execution without actual Goal lifecycle evidence is not a `/goal` E2E result.
+E2E results live separately under `results/v2/e2e/`:
+
+- [`20260713060812-e2e-01-initial`](v2/e2e/20260713060812-e2e-01-initial/manifest.json): `failed`; no actual Goal activation.
+- [`20260713061043-e2e-01-interactive`](v2/e2e/20260713061043-e2e-01-interactive/manifest.json): `contaminated`; pre-revision method and non-identical objective.
+- [`20260713062403-e2e-01-interactive-revision`](v2/e2e/20260713062403-e2e-01-interactive-revision/manifest.json): valid `revision`; exact activation, achieved observation, fresh verifier pass.
+
+E2E-02 and E2E-03 are unexecuted. A normal task execution without actual Goal lifecycle evidence is not a `/goal` E2E result.
 
 ## Revision rule
 

@@ -32,7 +32,7 @@
     "state_sha256": "5e14e40959fca7910afc84bc78fef3e3d399d79cf1d430b7dba7edd558f1d3c5",
     "verify_sha256_before": "83f2e25ac31ef06cd2175ad8d51e5d26341bd4392f6c2689dd2dcfa4fc8e6b99",
     "verify_sha256_after": "83f2e25ac31ef06cd2175ad8d51e5d26341bd4392f6c2689dd2dcfa4fc8e6b99",
-    "activation_evidence": "The local-only session trace contains one thread_goal_updated event with status active and the exact approved objective.",
+    "activation_evidence": "The local-only session trace contains one thread_goal_updated event with status active, but the entered objective omitted Markdown backticks and did not byte-match the approved objective body. This was detected during the later R-009 exact-objective audit.",
     "terminal_evidence": "The interactive UI displayed Goal achieved; the task-complete event reported the changed state, fresh verifier exit code 0, and Goal usage. The UI terminal line is a tested human observation and is not separately preserved as a public transcript."
   }
 }
