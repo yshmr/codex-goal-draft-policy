@@ -1,0 +1,8 @@
+{
+  "schema_version": "2.0-e2e-manifest",
+  "run_id": "20260713061043-e2e-01-interactive",
+  "authority": "contaminated",
+  "result_path": "results/v2/e2e/20260713061043-e2e-01-interactive/result.json",
+  "result_sha256": "b0a9224c250065f119c53b1ff39ab6bc161e260b54f559420bd8622df7fdaa9f",
+  "note": "Useful development observation, but executed before the interactive capture protocol revision was committed; not final result authority. The earlier non-interactive failed authority remains immutable."
+}

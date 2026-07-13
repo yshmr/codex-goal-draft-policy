@@ -1,0 +1,8 @@
+{
+  "schema_version": "2.0-e2e-manifest",
+  "run_id": "20260713060812-e2e-01-initial",
+  "authority": "failed",
+  "result_path": "results/v2/e2e/20260713060812-e2e-01-initial/result.json",
+  "result_sha256": "f986e5c7175c39895c6f620f82881e537355449de5c44e6807cc2e0aed7e1ccb",
+  "note": "No Goal creation evidence observed; do not interpret as a real /goal E2E."
+}

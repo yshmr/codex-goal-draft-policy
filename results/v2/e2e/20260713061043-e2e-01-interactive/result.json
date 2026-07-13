@@ -1,0 +1,38 @@
+{
+  "schema_version": "2.0-e2e",
+  "run_id": "20260713061043-e2e-01-interactive",
+  "case_id": "E2E-01",
+  "executed_at": "2026-07-13T06:10:43.668Z",
+  "codex_version": "codex-cli 0.143.0",
+  "model": "gpt-5.4",
+  "effort": "medium",
+  "skill_commit": "f4b4385050574f480cfbb01f015f05bb38fdf648",
+  "fixture_sha256": "4fd6f500006f4ac4a7af23d3b110001efcedfa84b711c250cfeac9358098c5e7",
+  "approved_goal_sha256": "d0ddd7fc045954730198d889eea91480ec0e1fa13d0fe300ddaafb003a1b34bc",
+  "activation_observed": true,
+  "terminal_goal_state_observed": true,
+  "exit_code": 0,
+  "usage": {
+    "input_tokens": 206766,
+    "cached_input_tokens": 177664,
+    "output_tokens": 1874,
+    "reasoning_output_tokens": 257,
+    "total_tokens_including_cached": 208640,
+    "goal_reported_tokens": 30414,
+    "goal_reported_seconds": 71
+  },
+  "raw_trace_sha256": "6d84336221ee65de21bd200c49db3e59b6f357e046f826c4ccb317ebe264ff8b",
+  "raw_output_sha256": "435d87c66206dec30619242f67b37a1ba3ced7febecb38a8240160b6181fd763",
+  "final_output": "state.json is now {\"ready\":true}. verify.mjs was not changed. Fresh verification passed in a new process: exit code 0, stdout verified ready. The Goal UI reported achieved after about 71 seconds.",
+  "post_verification": {
+    "command": "node verify.mjs",
+    "exit_code": 0,
+    "stdout": "verified ready\n",
+    "stderr": "",
+    "state_sha256": "5e14e40959fca7910afc84bc78fef3e3d399d79cf1d430b7dba7edd558f1d3c5",
+    "verify_sha256_before": "83f2e25ac31ef06cd2175ad8d51e5d26341bd4392f6c2689dd2dcfa4fc8e6b99",
+    "verify_sha256_after": "83f2e25ac31ef06cd2175ad8d51e5d26341bd4392f6c2689dd2dcfa4fc8e6b99",
+    "activation_evidence": "The local-only session trace contains one thread_goal_updated event with status active and the exact approved objective.",
+    "terminal_evidence": "The interactive UI displayed Goal achieved; the task-complete event reported the changed state, fresh verifier exit code 0, and Goal usage. The UI terminal line is a tested human observation and is not separately preserved as a public transcript."
+  }
+}

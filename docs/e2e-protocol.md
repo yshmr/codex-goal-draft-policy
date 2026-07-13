@@ -12,11 +12,29 @@ The Skill workflow and Goal workflow are separate.
 
 The E2E runner must require an explicit approval string and exact case ID. Absence of that approval makes the case unexecuted, not failed.
 
-The executable interface uses the SHA-256 of the exact reviewed `GOAL.md` as the approval token:
+The non-interactive probe uses the SHA-256 of the exact reviewed `GOAL.md` as the approval token:
 
 ```bash
 node scripts/run-goal-e2e.mjs --id E2E-01 --approval-sha <reviewed-goal-sha256> --publish
 ```
+
+In tested Codex CLI 0.143.0 behavior, `codex exec --json` did not expose the interactive `/goal` lifecycle. Therefore, a failed probe is retained as a failed transport observation and is never relabeled as real Goal E2E.
+
+For a real E2E, start an interactive TUI in a fresh isolated fixture, enter the exact approved objective through `/goal`, wait for the rendered terminal state, exit the TUI, and capture the local session JSONL:
+
+```bash
+npm run e2e:capture -- \
+  --id E2E-01 \
+  --approval-sha <reviewed-goal-sha256> \
+  --session-jsonl <local-session-jsonl> \
+  --workdir <isolated-fixture-copy> \
+  --terminal-observation achieved \
+  --process-exit-code 0 \
+  --authority revision \
+  --publish
+```
+
+The capture tool requires a clean committed worktree, exact approved-objective activation evidence, a task-complete event, and for `achieved`, a fresh passing verifier. The rendered TUI terminal label is explicitly human-observed because the tested session JSONL records activation and task completion but not that label. This limitation is preserved in the public result.
 
 ## Cases considered
 
@@ -49,4 +67,4 @@ Fixture: `fixtures/e2e_decision`.
 - raw trace/output SHA with raw material local-only;
 - sanitized public result passing safety scan.
 
-If `codex exec` cannot expose actual Goal lifecycle/tool evidence, a normal agent execution is not relabeled as `/goal` E2E. The case remains unexecuted for `/goal` even if the underlying fixture task succeeds.
+If `codex exec` cannot expose actual Goal lifecycle/tool evidence, a normal agent execution is not relabeled as `/goal` E2E. An interactive result is authoritative only when its manifest links exact activation evidence, explicit terminal-state observation, and post-verification; otherwise the case remains unexecuted even if the underlying fixture task succeeds.
