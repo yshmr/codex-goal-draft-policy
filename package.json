@@ -1,0 +1,17 @@
+{
+  "name": "codex-goal-draft-policy-evals",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Pure validation and Codex-backed evaluation harness for goal-draft-policy",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "test": "node scripts/validate.mjs",
+    "validate": "node scripts/validate.mjs",
+    "fixtures:update": "node scripts/validate.mjs --update-fixtures",
+    "eval": "node scripts/run-evals.mjs",
+    "e2e": "node scripts/run-goal-e2e.mjs",
+    "blind-review": "node scripts/build-blind-review.mjs"
+  },
+  "engines": {"node": ">=20"}
+}

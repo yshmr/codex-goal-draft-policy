@@ -1,0 +1,4 @@
+source	proposal	finding	confidence
+S1	baseline	fewer setup steps	medium
+S2	candidate	clearer recovery text	medium
+S3	both	latency not measured	low

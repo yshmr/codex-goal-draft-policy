@@ -1,0 +1,6 @@
+node_modules/
+.eval-work/
+coverage/
+*.log
+*.tmp
+.DS_Store

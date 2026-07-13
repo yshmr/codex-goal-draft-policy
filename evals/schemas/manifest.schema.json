@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/goal-draft-policy/manifest.schema.json",
+  "type": "object",
+  "required": ["schema_version", "run_id", "authority", "executed_at", "codex_version", "model", "effort", "skill_commit", "contract_sha256", "results"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": "2.0"},
+    "run_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    "authority": {"enum": ["initial", "revision", "superseded", "failed", "contaminated", "inconclusive"]},
+    "executed_at": {"type": "string", "format": "date-time"},
+    "codex_version": {"type": "string"},
+    "model": {"type": "string"},
+    "effort": {"enum": ["low", "medium", "high", "xhigh"]},
+    "skill_commit": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "contract_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "notes": {"type": "string"},
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["case_id", "condition", "repetition", "fixture_sha256", "prompt_sha256", "exit_code", "usage", "result_path", "result_sha256", "raw_trace_sha256", "raw_output_sha256"],
+        "additionalProperties": false,
+        "properties": {
+          "case_id": {"type": "string"},
+          "condition": {"enum": ["with_skill", "without_skill"]},
+          "repetition": {"type": "integer"},
+          "fixture_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "prompt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "exit_code": {"type": "integer"},
+          "usage": {"type": "object"},
+          "result_path": {"type": "string"},
+          "result_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "raw_trace_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "raw_output_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+        }
+      }
+    }
+  }
+}

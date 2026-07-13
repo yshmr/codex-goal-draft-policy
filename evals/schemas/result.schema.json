@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/goal-draft-policy/result.schema.json",
+  "type": "object",
+  "required": ["schema_version", "run_id", "case_id", "condition", "repetition", "exit_code", "output_sha256", "raw_trace_sha256", "raw_output_sha256", "usage", "grade", "final_output"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": "2.0"},
+    "run_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    "case_id": {"type": "string", "pattern": "^(T|Q|E2E)-[0-9]{2}$"},
+    "condition": {"enum": ["with_skill", "without_skill"]},
+    "repetition": {"type": "integer", "minimum": 1, "maximum": 3},
+    "exit_code": {"type": "integer"},
+    "output_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "raw_trace_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "raw_output_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "usage": {"type": "object"},
+    "grade": {"type": "object"},
+    "final_output": {"type": "string"}
+  }
+}

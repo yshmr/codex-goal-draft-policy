@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/goal-draft-policy/case.schema.json",
+  "type": "object",
+  "required": ["id", "suite", "title", "fixture", "prompt", "expected_trigger", "checks", "critical", "repetitions"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {"type": "string", "pattern": "^(T|Q|E2E)-[0-9]{2}$"},
+    "suite": {"enum": ["trigger", "quality", "e2e"]},
+    "title": {"type": "string", "minLength": 3},
+    "fixture": {"type": "string", "minLength": 1},
+    "prompt": {"type": "string", "minLength": 10},
+    "expected_trigger": {"enum": ["trigger", "no_trigger", "explicit_trigger", "not_applicable"]},
+    "checks": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+    "critical": {"type": "boolean"},
+    "repetitions": {"type": "integer", "minimum": 1, "maximum": 3},
+    "allowed_commands": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "evidence_terms": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "notes": {"type": "string"}
+  }
+}

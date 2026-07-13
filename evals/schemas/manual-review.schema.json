@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/goal-draft-policy/manual-review.schema.json",
+  "type": "object",
+  "required": ["blind_id", "reviewer", "reviewed_at", "axes", "major_violations", "total"],
+  "properties": {
+    "blind_id": {"type": "string"},
+    "reviewer": {"type": "string"},
+    "reviewed_at": {"type": "string", "format": "date-time"},
+    "axes": {
+      "type": "object",
+      "required": ["suitability", "evidence_grounding", "outcome", "verification", "constraints", "iteration", "stopping", "scope_discipline"],
+      "additionalProperties": {"type": "integer", "minimum": 0, "maximum": 2}
+    },
+    "major_violations": {"type": "array", "items": {"type": "string"}},
+    "total": {"type": "integer", "minimum": 0, "maximum": 16},
+    "notes": {"type": "string"}
+  }
+}

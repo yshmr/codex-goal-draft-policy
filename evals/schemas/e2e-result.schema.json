@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/goal-draft-policy/e2e-result.schema.json",
+  "type": "object",
+  "required": ["schema_version", "run_id", "case_id", "executed_at", "codex_version", "model", "effort", "skill_commit", "fixture_sha256", "approved_goal_sha256", "activation_observed", "terminal_goal_state_observed", "exit_code", "usage", "raw_trace_sha256", "raw_output_sha256", "final_output", "post_verification"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": "2.0-e2e"},
+    "run_id": {"type": "string"},
+    "case_id": {"pattern": "^E2E-[0-9]{2}$"},
+    "executed_at": {"type": "string", "format": "date-time"},
+    "codex_version": {"type": "string"},
+    "model": {"type": "string"},
+    "effort": {"type": "string"},
+    "skill_commit": {"pattern": "^[a-f0-9]{40}$"},
+    "fixture_sha256": {"pattern": "^[a-f0-9]{64}$"},
+    "approved_goal_sha256": {"pattern": "^[a-f0-9]{64}$"},
+    "activation_observed": {"type": "boolean"},
+    "terminal_goal_state_observed": {"type": "boolean"},
+    "exit_code": {"type": "integer"},
+    "usage": {"type": "object"},
+    "raw_trace_sha256": {"pattern": "^[a-f0-9]{64}$"},
+    "raw_output_sha256": {"pattern": "^[a-f0-9]{64}$"},
+    "final_output": {"type": "string"},
+    "post_verification": {"type": "object"}
+  }
+}

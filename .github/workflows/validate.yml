@@ -1,0 +1,26 @@
+name: Pure validation
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm test
+      - name: Generated artifacts are current
+        run: git diff --exit-code
+
+  provider-evals-are-manual:
+    if: ${{ false }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Codex/provider-backed evals are intentionally not run on push."
